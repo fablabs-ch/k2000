@@ -5,9 +5,6 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 
-// Load bootstrap
-import 'bootstrap/dist/css/bootstrap.css'
-
 // Load font-awesome
 import 'font-awesome/css/font-awesome.css'
 
@@ -17,8 +14,6 @@ import 'vuetify/dist/vuetify.min.css'
 Vue.use(Vuetify)
 
 Vue.config.productionTip = false
-
-require('bootstrap')
 
 /* eslint-disable no-new */
 new Vue({
