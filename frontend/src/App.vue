@@ -29,15 +29,11 @@
     </v-navigation-drawer>
     <v-toolbar app fixed clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Bar-Omatic</v-toolbar-title>
     </v-toolbar>
     <main>
       <v-content>
-        <v-container fluid fill-height>
-          <v-layout>
-            <router-view></router-view>
-          </v-layout>
-        </v-container>
+        <router-view></router-view>
       </v-content>
     </main>
     <v-footer app fixed>

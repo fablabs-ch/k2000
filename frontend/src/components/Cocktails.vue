@@ -1,15 +1,8 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs3>
-        <v-card v-for="item in items" :key="item">
-          <v-card-title primary-title>
-            <h4>{{ item }}</h4>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn primary @click="order(item)">Order {{ item }}</v-btn>
-          </v-card-actions>
-        </v-card>
+      <v-flex xs12 v-for="c in cocktails" :key="c.name">
+        <cocktail-panel :cocktail="c" :ingredients="ingredients"></cocktail-panel>
       </v-flex>
     </v-layout>
 
@@ -24,23 +17,33 @@
 </template>
 
 <script>
+import cocktailPanel from '@/components/CocktailPanel'
 export default {
   name: 'cocktails',
   data () {
     return {
-      items: ['Vodka', 'Martini'],
+      cocktails: [],
+      ingredients: {},
       snackbar: false,
       snacktext: ''
     }
   },
+  mounted () {
+    const cocktailsDB = require('../../static/cocktail.json')
+    this.cocktails = cocktailsDB.recipes
+    this.ingredients = cocktailsDB.ingredients.reduce((ingredients, i) => {
+      ingredients[i.id] = i
+      return ingredients
+    }, {})
+  },
   methods: {
-    order (cocktail) {
-      this.notify(cocktail)
-    },
     notify (message) {
       this.snacktext = message
       this.snackbar = true
     }
+  },
+  components: {
+    cocktailPanel
   }
 }
 </script>
