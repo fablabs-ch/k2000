@@ -16,21 +16,21 @@
 <script>
 export default {
   name: 'settings',
-  data: function () {
+  data() {
     return {
       snackbar: false,
       snacktext: ''
     }
   },
   methods: {
-    tare: function () {
-      this.$http.get('/').then(response => {
+    tare() {
+      this.$http.post('/api/command/tare').then(response => {
         this.notify('Tare done')
       }, response => {
         this.notify('Error when trying to tare')
       })
     },
-    notify: function (message) {
+    notify(message) {
       this.snacktext = message
       this.snackbar = true
     }
