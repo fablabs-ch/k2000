@@ -9,12 +9,12 @@
       app
     >
       <v-list dense>
-        <router-link :to="{name: 'home'}" tag="v-list-tile" active-class="active" exact>
+        <router-link :to="{name: 'cocktails'}" tag="v-list-tile" active-class="active" exact>
           <v-list-tile-action>
             <v-icon>dashboard</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Dashboard</v-list-tile-title>
+            <v-list-tile-title>Cocktails</v-list-tile-title>
           </v-list-tile-content>
         </router-link>
         <router-link :to="{name: 'settings'}" tag="v-list-tile" active-class="active" exact>
