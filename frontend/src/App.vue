@@ -41,7 +41,7 @@
       </v-content>
     </main>
     <v-footer app fixed>
-      <span>&copy; 2017</span>
+      <span><i class="fa fa-heart"/> K2000</span>
     </v-footer>
   </v-app>
 </template>
