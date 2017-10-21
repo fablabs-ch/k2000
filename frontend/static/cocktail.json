@@ -1,0 +1,53 @@
+ {
+    "recipes": [
+        {
+            "name": "Pina Colada",
+            "description": "",
+            "imageUrl": "",
+            "shakeYourBody": true,
+            "items": [
+                {
+                    "ingredientId": 1,
+                    "ml": 40
+                },
+            ]
+        }
+    ],
+    "ingredients": [
+        {
+            "id": 1,
+            "name": "Rhum blanc",
+            "type": "ALCOOL",
+            "manual": false
+        }
+    ]
+ }
+ [types]
+ ALCOOL
+ MINERAL,
+ SIRUP,
+ OTHER
+
+ Whisky
+ Gin
+ Rhum blanc
+ Rhum Ambré
+ Vodka
+ Tequila
+ Curaçao bleu
+ Cointreau
+ Martini
+ Ananas
+ Lait de Coco
+ Passion
+ Orange
+ Citron Vert
+ Citron
+ Cranberry
+ Coca
+ Perrier
+ Tonic
+ melon
+ Grenadine
+ canne
+ orgeat
