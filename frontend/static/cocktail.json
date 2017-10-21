@@ -10,6 +10,50 @@
                     "ingredientId": 1,
                     "ml": 40
                 },
+                {
+                    "ingredientId": 2,
+                    "ml": 40
+                },
+                {
+                    "ingredientId": 3,
+                    "ml": 40
+                }
+            ]
+        },
+        {
+            "name": "Pina2 Colada2",
+            "description": "",
+            "imageUrl": "",
+            "shakeYourBody": true,
+            "items": [
+                {
+                    "ingredientId": 1,
+                    "ml": 40
+                },
+                {
+                    "ingredientId": 2,
+                    "ml": 40
+                }
+            ]
+        },
+        {
+            "name": "asdaads Colada",
+            "description": "",
+            "imageUrl": "",
+            "shakeYourBody": false,
+            "items": [
+                {
+                    "ingredientId": 1,
+                    "ml": 40
+                },
+                {
+                    "ingredientId": 2,
+                    "ml": 40
+                },
+                {
+                    "ingredientId": 3,
+                    "ml": 40
+                }
             ]
         }
     ],
@@ -19,35 +63,18 @@
             "name": "Rhum blanc",
             "type": "ALCOOL",
             "manual": false
+        },
+        {
+            "id": 2,
+            "name": "Grenadine",
+            "type": "SIRUP",
+            "manual": false
+        },
+        {
+            "id": 3,
+            "name": "Eau",
+            "type": "MINERAL",
+            "manual": false
         }
     ]
  }
- [types]
- ALCOOL
- MINERAL,
- SIRUP,
- OTHER
-
- Whisky
- Gin
- Rhum blanc
- Rhum Ambré
- Vodka
- Tequila
- Curaçao bleu
- Cointreau
- Martini
- Ananas
- Lait de Coco
- Passion
- Orange
- Citron Vert
- Citron
- Cranberry
- Coca
- Perrier
- Tonic
- melon
- Grenadine
- canne
- orgeat
