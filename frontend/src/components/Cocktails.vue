@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xs3>
-        <v-card v-for="item in items" :item="item">
+        <v-card v-for="item in items" :key="item">
           <v-card-title primary-title>
             <h4>{{ item }}</h4>
           </v-card-title>
