@@ -1,7 +1,17 @@
 <template>
-  <div>
-
-    <v-btn color="primary" @click="tare()">Tare</v-btn>
+  <v-container fluid>
+    <v-layout row wrap>
+      <v-flex xs3>
+        <v-card v-for="item in items" :key="item">
+          <v-card-title primary-title>
+            <h4>{{ item }}</h4>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn primary @click="order(item)">Order {{ item }}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
 
     <v-snackbar :timeout=2000
                 :top=true
@@ -10,25 +20,22 @@
       {{ snacktext }}
       <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
     </v-snackbar>
-  </div>
+  </v-container>
 </template>
 
 <script>
 export default {
-  name: 'settings',
+  name: 'cocktails',
   data: function () {
     return {
+      items: ['Vodka', 'Martini'],
       snackbar: false,
       snacktext: ''
     }
   },
   methods: {
-    tare: function () {
-      this.$http.get('/').then(response => {
-        this.notify('Tare done')
-      }, response => {
-        this.notify('Error when trying to tare')
-      })
+    order: function (cocktail) {
+      this.notify(cocktail)
     },
     notify: function (message) {
       this.snacktext = message
@@ -39,6 +46,4 @@ export default {
 </script>
 
 <style>
-
 </style>
-
