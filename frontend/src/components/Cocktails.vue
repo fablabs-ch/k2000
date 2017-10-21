@@ -26,7 +26,7 @@
 <script>
 export default {
   name: 'cocktails',
-  data: function () {
+  data () {
     return {
       items: ['Vodka', 'Martini'],
       snackbar: false,
@@ -34,10 +34,10 @@ export default {
     }
   },
   methods: {
-    order: function (cocktail) {
+    order (cocktail) {
       this.notify(cocktail)
     },
-    notify: function (message) {
+    notify (message) {
       this.snacktext = message
       this.snackbar = true
     }
