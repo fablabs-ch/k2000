@@ -3,7 +3,8 @@
 
     <v-btn color="primary" @click="tare()">Tare</v-btn>
     <v-btn color="error" @click="stop()">Stop</v-btn>
-    Config: {{ config }}
+
+    <ingredientConfig v-for="item in config" :item='item' :key="item.id"></ingredientConfig>
 
     <v-snackbar :timeout=2000
                 :top=true
@@ -16,8 +17,13 @@
 </template>
 
 <script>
+import IngredientConfig from './IngredientConfig'
+
 export default {
   name: 'settings',
+  components: {
+    IngredientConfig
+  },
   data () {
     return {
       snackbar: false,
@@ -46,11 +52,12 @@ export default {
     }
   },
   mounted () {
-    this.$http.get('api/config/').then(response => {
-      this.config = response.data
-    }, response => {
-      this.notify('Impossible to load the config')
-    })
+    this.config = [{'id': 10, 'ingredient': 12}, {'id': 12, 'ingredient': 11}]
+    // this.$http.get('api/config/').then(response => {
+    //   this.config = response.data
+    // }, response => {
+    //   this.notify('Impossible to load the config')
+    // })
   }
 }
 </script>
