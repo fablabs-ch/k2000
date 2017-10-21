@@ -3,7 +3,7 @@
   <v-app id="inspire" dark>
     <v-navigation-drawer
       clipped
-      persistent
+      temporary
       v-model="drawer"
       enable-resize-watcher
       app
@@ -36,9 +36,6 @@
         <router-view></router-view>
       </v-content>
     </main>
-    <v-footer app fixed>
-      <span><i class="fa fa-heart"/> K2000</span>
-    </v-footer>
   </v-app>
 </template>
 

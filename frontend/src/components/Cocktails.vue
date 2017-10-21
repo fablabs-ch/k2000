@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap>
-      <v-flex xs12 v-for="c in cocktails" :key="c.name">
+    <v-layout row wrap justify-space-around>
+      <v-flex xs12 md5 xl3 v-for="c in cocktails" :key="c.name">
         <cocktail-panel :cocktail="c" :ingredients="ingredients"></cocktail-panel>
       </v-flex>
     </v-layout>

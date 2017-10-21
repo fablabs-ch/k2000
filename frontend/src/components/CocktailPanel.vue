@@ -1,14 +1,14 @@
 <template>
-    <v-card>
+    <v-card class="my-4 cocktail">
         <v-card-title primary-title>
-        <div class="headline">{{cocktail.name}}</div>
-        <div column>
-            <div v-for="i in cocktail.items" :key="i.ingredientId">
-            {{ingredients[i.ingredientId].name}}
-            {{i.ml | toUnit}} cl
-            {{ingredients[i.ingredientId].type}}
-            </div>
-        </div>
+          <v-layout column>
+              <div class="headline">{{cocktail.name}}</div>
+              <div v-for="i in cocktail.items" :key="i.ingredientId">
+              {{ingredients[i.ingredientId].name}}
+              {{i.ml | toUnit}} cl
+              {{ingredients[i.ingredientId].type}}
+              </div>
+          </v-layout>
         </v-card-title>
         <v-card-actions>
         <v-btn flat @click="">Customize</v-btn>
@@ -36,6 +36,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+  .cocktail {
 
+  }
 </style>
