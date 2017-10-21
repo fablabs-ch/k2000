@@ -2,6 +2,7 @@
   <div>
 
     <v-btn color="primary" @click="tare()">Tare</v-btn>
+    <v-btn color="error" @click="stop()">Stop</v-btn>
 
     <v-snackbar :timeout=2000
                 :top=true
@@ -16,21 +17,28 @@
 <script>
 export default {
   name: 'settings',
-  data() {
+  data () {
     return {
       snackbar: false,
       snacktext: ''
     }
   },
   methods: {
-    tare() {
+    tare () {
       this.$http.post('/api/command/tare').then(response => {
-        this.notify('Tare done')
+        this.notify('Tare sent')
       }, response => {
         this.notify('Error when trying to tare')
       })
     },
-    notify(message) {
+    stop () {
+      this.$http.post('/api/command/stop').then(response => {
+        this.notify('Stop sent')
+      }, response => {
+        this.notify('Error when trying to stop')
+      })
+    },
+    notify (message) {
       this.snacktext = message
       this.snackbar = true
     }
