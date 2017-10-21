@@ -68,7 +68,8 @@ void do_tare(){      // Check glass tare
 
 int get_weight(){ // check glass weight and return it
    scale.set_scale(calibration_factor);
-   Serial.println(scale.get_units(), 5);  
+   Serial.println(scale.get_units(), 5);
+
 } 
 
 int move_carrier(){ // Move stepper
@@ -93,16 +94,7 @@ void frame_animation(){ // Indicate where glass placement
   
 
 void loop() {
-  //glass_animation();
-  //frame_animation();
 
-   
-
-   if(Serial.available()){
-    char temp = Serial.read();
-    if(temp == 't')
-      do_tare(); 
-   }
    
     get_weight();
 }
