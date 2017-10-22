@@ -57,6 +57,19 @@ export default {
 </script>
 
 <style>
+
+
+body {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 16pt;
+}
+
+.navigation-drawer>.list:not(.list--dense) .list__tile,
+.input-group--text-field input, .input-group--text-field textarea,
+.btn {
+  font-size: 16pt;
+}
+
  @font-face {
      font-family: 'Montserrat';
      src: url('/static/fonts/Montserrat-Regular.otf');
