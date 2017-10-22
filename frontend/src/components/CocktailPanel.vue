@@ -3,12 +3,18 @@
         <v-card-title primary-title :style="{'background': color}">
           <v-layout column>
               <div class="headline">{{cocktail.name}}</div>
-              <div v-for="i in cocktail.items" :key="i.ingredientId">
-              {{i.ml | toUnit}} cl
-              <ingredient-type style="display: inline-block;" :type="ingredients[i.ingredientId].type" :style="{'background-color': ingredients[i.ingredientId].color}"></ingredient-type>
-               {{ingredients[i.ingredientId].name}}
-              </div>
-              <img class="icon" v-if="cocktail.shakeYourBody" src="../assets/shaker.svg" alt="shaker">
+              <v-list class="ingredients">
+                <v-list-tile v-for="i in cocktail.items" :key="i.ingredientId">
+                  <v-layout row  class="ingredient">
+                    <span class="qty">{{i.ml | toUnit}} cl</span>
+                    <ingredient-type class="type" style="display: inline-block;" :type="ingredients[i.ingredientId].type" :style="{'background-color': ingredients[i.ingredientId].color}"></ingredient-type>
+                    <v-flex flex class="i-name">{{ingredients[i.ingredientId].name}}</v-flex>
+                  </v-layout>
+                </v-list-tile>
+                <v-list-tile>
+                  <img class="icon" v-if="cocktail.shakeYourBody" src="../assets/shaker.svg" alt="shaker">
+                </v-list-tile>
+              </v-list>
           </v-layout>
         </v-card-title>
         <v-card-actions>
@@ -89,8 +95,26 @@ export default {
     font-size: 18pt;
     margin-bottom: 12pt;
   }
+
+  .ingredients {
+    background-color: rgba(255, 255, 255, 0.3)
+  }
+
+  .ingredient {
+    font-size: 16pt;
+  }
+
   .cocktail {
 
+  }
+
+  .type {
+    margin: 0 20px;
+  }
+
+  .qty {
+    text-align: right;
+    width: 40px;
   }
 
   .icon {
