@@ -1,11 +1,11 @@
 <template>
-  <v-list-tile>
+  <v-list-tile avatar>
     <v-list-tile-action>
       <v-select
-        label="Type"
         :items="['ALCOOL', 'MINERAL', 'SIRUP', 'OTHER']"
         v-model="value.type"
         max-height="auto"
+        @change="changed"
       >
         <template slot="selection" slot-scope="data">
           <ingredient-type :type="data.item"></ingredient-type>
@@ -16,10 +16,13 @@
     </v-select>
     </v-list-tile-action>
     <v-list-tile-content>
-      <v-text-field name="name" label="Name" v-model="value.name"></v-text-field>
+      <v-text-field name="name" placeholder="Name"
+      v-model="value.name" @change="changed"
+      :rules="[() => value.name.length > 0 || 'A name is required']"
+      required></v-text-field>
     </v-list-tile-content>
     <v-list-tile-action>
-      <color-picker v-model="value.color"></color-picker>
+      <color-picker v-model="value.color" @input="changed"></color-picker>
     </v-list-tile-action>
   </v-list-tile>
 </template>
@@ -32,13 +35,11 @@ export default {
   props: ['value'],
   data () {
     return {
-      e11: 'MINERAL',
-      color: '#ff0000'
     }
   },
   methods: {
-    save () {
-      // TODO save / new ?
+    changed () {
+      this.$emit('change', this.value)
     }
   },
   components: {
