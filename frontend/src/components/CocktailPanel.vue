@@ -20,7 +20,12 @@
 
 <script>
 export default {
-  props: ['cocktail', 'ingredients'],
+  props: ['cocktail'],
+  data () {
+    return {
+      ingredients: this.$root.ingredients
+    }
+  },
   methods: {
     order (cocktail) {
       this.$http.post('/api/command/order', cocktail.items).then(response => {

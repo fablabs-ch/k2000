@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <v-layout row wrap justify-space-around>
-      <v-flex xs12 md5 xl3 v-for="c in cocktails" :key="c.name">
-        <cocktail-panel :cocktail="c" :ingredients="ingredients"></cocktail-panel>
+      <v-flex xs12 md5 xl3 v-for="c in $root.cocktails" :key="c.name">
+        <cocktail-panel :cocktail="c"></cocktail-panel>
       </v-flex>
     </v-layout>
 
@@ -22,19 +22,9 @@ export default {
   name: 'cocktails',
   data () {
     return {
-      cocktails: [],
-      ingredients: {},
       snackbar: false,
       snacktext: ''
     }
-  },
-  mounted () {
-    const cocktailsDB = require('../../static/cocktail.json')
-    this.cocktails = cocktailsDB.recipes
-    this.ingredients = cocktailsDB.ingredients.reduce((ingredients, i) => {
-      ingredients[i.id] = i
-      return ingredients
-    }, {})
   },
   methods: {
     notify (message) {

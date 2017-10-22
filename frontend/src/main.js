@@ -22,6 +22,21 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  data () {
+    return {
+      // global data store access via vm.$root
+      cocktails: [],
+      ingredients: {}
+    }
+  },
+  created () {
+    const cocktailsDB = require('../static/cocktail.json')
+    this.cocktails = cocktailsDB.recipes
+    this.ingredients = cocktailsDB.ingredients.reduce((ingredients, i) => {
+      ingredients[i.id] = i
+      return ingredients
+    }, {})
+  },
   router,
   template: '<App/>',
   components: { App }
