@@ -3,14 +3,12 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueResource from 'vue-resource'
-import App from './App'
-import router from './router'
-
-// Load font-awesome
-import 'font-awesome/css/font-awesome.css'
 
 // Vuetify
 import 'vuetify/dist/vuetify.min.css'
+
+import App from './App'
+import router from './router'
 
 Vue.use(Vuetify)
 
