@@ -4,23 +4,24 @@
       <div class="loader">
           <div :class="{show: loaded === 100}" class="lemon"></div>
           <div :class="{show: loaded === 100}" class="straw"></div>
-          <div class="glass">
+          <div class="glass" :class="{animate: !run}">
               <div class="cubes">
                   <div :class="{show: loaded >= 25}"></div>
                   <div :class="{show: loaded >= 50}"></div>
                   <div :class="{show: loaded >= 75}"></div>
               </div>
               <div class="drink" :style="{top: `${100 - loaded * .9}%`}"></div>
-              <span class="counter">{{loaded}}%</span>
+              <span class="counter" v-show="run">{{loaded}}%</span>
           </div>
           <div class="coaster"></div>
       </div>
-      <footer>Please wait while<br>we fill up your glass...</footer>
+      <footer>{{message}}</footer>
   </div>
 </template>
 
 <script>
 export default {
+  props: ['message', 'run'],
   data () {
     return {
       loaded: 0,
@@ -28,7 +29,9 @@ export default {
     }
   },
   mounted () {
-    this.startLoading()
+    if (this.run) {
+      this.startLoading()
+    }
   },
   methods: {
     startLoading () {
@@ -36,7 +39,9 @@ export default {
       this.intervalWorker = setInterval(this.increment, 30)
     },
     stopLoading () {
-      clearInterval(this.intervalWorker)
+      if (this.intervalWorker) {
+        clearInterval(this.intervalWorker)
+      }
     },
     increment () {
       if (this.loaded === 100) {
@@ -44,6 +49,14 @@ export default {
         setTimeout(this.startLoading, 1000)
       } else {
         this.loaded++
+      }
+    }
+  },
+  watch: {
+    run (val) {
+      this.stopLoading()
+      if (val) {
+        this.startLoading()
       }
     }
   }
@@ -54,6 +67,22 @@ export default {
 
 .show {
   opacity: 1 !important;
+}
+
+.glass.animate {
+  animation-duration: 2s;
+  animation-name: glass;
+  animation-iteration-count: infinite;
+}
+
+@keyframes glass {
+  0% {
+    bottom: 100px
+  }
+
+  80% {
+    bottom: 0px;
+  }
 }
 
 .cocktail-loader {

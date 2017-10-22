@@ -32,6 +32,14 @@ new Vue({
   created () {
     const cocktailsDB = require('../static/cocktail.json')
     this.cocktails = cocktailsDB.recipes
+    // backup qty to restore after customized version
+    this.cocktails.forEach(c => {
+      c.items.forEach(i => {
+        i.mlOriginal = i.ml
+        i.disabled = false
+        i.custom = false
+      })
+    })
     this.ingredients = cocktailsDB.ingredients.reduce((ingredients, i) => {
       ingredients[i.id] = i
       return ingredients

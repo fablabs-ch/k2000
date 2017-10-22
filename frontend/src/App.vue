@@ -63,7 +63,7 @@ body {
   font-family: 'Architects Daughter', cursive;
   font-size: 16pt;
 }
-
+.list__tile,
 .navigation-drawer>.list:not(.list--dense) .list__tile,
 .input-group--text-field input, .input-group--text-field textarea,
 .btn {

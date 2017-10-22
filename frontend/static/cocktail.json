@@ -63,21 +63,21 @@
             "name": "Rhum blanc",
             "type": "ALCOOL",
             "manual": false,
-            "color": "#ff0000"
+            "color": "#ffc673"
         },
         {
             "id": 2,
             "name": "Grenadine",
             "type": "SIRUP",
             "manual": false,
-            "color": "#00ff00"
+            "color": "#ff5145"
         },
         {
             "id": 3,
             "name": "Eau",
             "type": "MINERAL",
             "manual": false,
-            "color": "#0000ff"
+            "color": "#d9e3e0"
         }
     ]
  }
