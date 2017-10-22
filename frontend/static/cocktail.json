@@ -12,11 +12,11 @@
                 },
                 {
                     "ingredientId": 2,
-                    "ml": 40
+                    "ml": 20
                 },
                 {
                     "ingredientId": 3,
-                    "ml": 40
+                    "ml": 30
                 }
             ]
         },
@@ -48,11 +48,11 @@
                 },
                 {
                     "ingredientId": 2,
-                    "ml": 40
+                    "ml": 20
                 },
                 {
                     "ingredientId": 3,
-                    "ml": 40
+                    "ml": 10
                 }
             ]
         }

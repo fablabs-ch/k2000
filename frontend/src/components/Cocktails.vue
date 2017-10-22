@@ -17,7 +17,9 @@
 </template>
 
 <script>
-import cocktailPanel from '@/components/CocktailPanel'
+import CocktailPanel from '@/components/CocktailPanel'
+import CocktailLoader from '@/components/CocktailLoader'
+
 export default {
   name: 'cocktails',
   data () {
@@ -33,7 +35,8 @@ export default {
     }
   },
   components: {
-    cocktailPanel
+    CocktailPanel,
+    CocktailLoader
   }
 }
 </script>
