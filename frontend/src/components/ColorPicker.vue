@@ -15,13 +15,13 @@
         </div>
         <div class="color-picker__inner">
           <div class="control" v-bind:style="gradientH">
-            <input type="range" min="0" max="360" v-model="h" />
+            <input type="range" min="0" max="360" v-model="h" @change="updateColor" />
           </div>
           <div class="control" v-bind:style="gradientS">
-            <input type="range" min="0" max="100" v-model="s" />
+            <input type="range" min="0" max="100" v-model="s" @change="updateColor" />
           </div>
           <div class="control" v-bind:style="gradientL">
-            <input type="range" min="0" max="100" v-model="l" />
+            <input type="range" min="0" max="100" v-model="l" @change="updateColor" />
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
 
 <script>
 
-const tinycolor = require('tinycolor2')
+import tinycolor from 'tinycolor2'
 
 function hsb2hsl (h, s, b) {
   const hsl = {
@@ -65,18 +65,18 @@ function hsb2hsl (h, s, b) {
 export default {
   props: ['value'],
   data () {
+    const hsv = this.toHsv(this.value)
     return {
       isVisible: false,
-      h: 0,
-      s: 0,
-      l: 0
+      h: hsv.h,
+      s: hsv.s,
+      l: hsv.v
     }
   },
   computed: {
     color () {
       const hsl = hsb2hsl(parseFloat(this.h) / 360, parseFloat(this.s) / 100, parseFloat(this.l) / 100)
       const s = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
-      this.$emit('input', s)
       return s
     },
     colorString () {
@@ -130,15 +130,28 @@ export default {
     toggle () {
       this.isVisible = !this.isVisible
     },
+    toHsv (val) {
+      const hsv = tinycolor(val).toHsv()
+      return {
+        h: hsv.h,
+        s: Math.round(hsv.s * 100),
+        v: Math.round(hsv.v * 100)
+      }
+    },
     setHsl (val) {
-      const hsl = tinycolor(val).toHsv()
-      this.h = Math.round(hsl.h * 360)
-      this.s = Math.round(hsl.s * 100)
-      this.l = Math.round(hsl.v * 100)
+      const hsv = this.toHsv(val)
+      this.h = hsv.h
+      this.s = hsv.s
+      this.l = hsv.v
+    },
+    updateColor () {
+      this.$emit('input', tinycolor(this.color).toHexString())
     }
   },
-  mounted () {
-    this.setHsl(this.value)
+  watch: {
+    value (val) {
+      this.setHsl(val)
+    }
   }
 }
 </script>
