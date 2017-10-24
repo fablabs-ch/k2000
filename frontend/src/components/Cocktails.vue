@@ -1,15 +1,8 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap>
-      <v-flex xs3>
-        <v-card v-for="item in items" :key="item">
-          <v-card-title primary-title>
-            <h4>{{ item }}</h4>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn primary @click="order(item)">Order {{ item }}</v-btn>
-          </v-card-actions>
-        </v-card>
+    <v-layout row wrap justify-space-around>
+      <v-flex xs12 md5 xl3 v-for="c in $root.cocktails" :key="c.name">
+        <cocktail-panel :cocktail="c" @order="handleOrder"></cocktail-panel>
       </v-flex>
     </v-layout>
 
@@ -20,27 +13,37 @@
       {{ snacktext }}
       <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
     </v-snackbar>
+    <order-dialog :order="order" @close="order = null"></order-dialog>
   </v-container>
 </template>
 
 <script>
+import CocktailPanel from '@/components/CocktailPanel'
+import CocktailLoader from '@/components/CocktailLoader'
+import OrderDialog from '@/components/OrderDialog'
+
 export default {
   name: 'cocktails',
-  data: function () {
+  data () {
     return {
-      items: ['Vodka', 'Martini'],
       snackbar: false,
-      snacktext: ''
+      snacktext: '',
+      order: null
     }
   },
   methods: {
-    order: function (cocktail) {
-      this.notify(cocktail)
-    },
-    notify: function (message) {
+    notify (message) {
       this.snacktext = message
       this.snackbar = true
+    },
+    handleOrder (order) {
+      this.order = order
     }
+  },
+  components: {
+    CocktailPanel,
+    CocktailLoader,
+    OrderDialog
   }
 }
 </script>

@@ -1,25 +1,33 @@
 <template>
 
-  <v-app id="inspire" dark>
+  <v-app id="inspire">
     <v-navigation-drawer
       clipped
-      persistent
+      temporary
       v-model="drawer"
       enable-resize-watcher
       app
     >
-      <v-list dense>
+      <v-list two-line>
         <router-link :to="{name: 'cocktails'}" tag="v-list-tile" active-class="active" exact>
           <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
+            <img src="./assets/refreshing-drink-glass-with-fruit-slice-straw-and-an-umbrella-decoration.svg" alt="cocktails">
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Cocktails</v-list-tile-title>
           </v-list-tile-content>
         </router-link>
+        <router-link :to="{name: 'ingredients'}" tag="v-list-tile" active-class="active" exact>
+          <v-list-tile-action>
+            <img src="./assets/picnic-basket-full-of-raw-vegetables.svg" alt="ingredients">
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Ingredients</v-list-tile-title>
+          </v-list-tile-content>
+        </router-link>
         <router-link :to="{name: 'settings'}" tag="v-list-tile" active-class="active" exact>
           <v-list-tile-action>
-            <v-icon>settings</v-icon>
+            <img src="./assets/ingredients-list.svg" alt="settings">
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Settings</v-list-tile-title>
@@ -29,20 +37,13 @@
     </v-navigation-drawer>
     <v-toolbar app fixed clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Bar-Omatic</v-toolbar-title>
     </v-toolbar>
     <main>
       <v-content>
-        <v-container fluid fill-height>
-          <v-layout>
-            <router-view></router-view>
-          </v-layout>
-        </v-container>
+        <router-view></router-view>
       </v-content>
     </main>
-    <v-footer app fixed>
-      <span><i class="fa fa-heart"/> K2000</span>
-    </v-footer>
   </v-app>
 </template>
 
@@ -56,6 +57,19 @@ export default {
 </script>
 
 <style>
+
+
+body {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 16pt;
+}
+.list__tile,
+.navigation-drawer>.list:not(.list--dense) .list__tile,
+.input-group--text-field input, .input-group--text-field textarea,
+.btn {
+  font-size: 16pt;
+}
+
  @font-face {
      font-family: 'Montserrat';
      src: url('/static/fonts/Montserrat-Regular.otf');

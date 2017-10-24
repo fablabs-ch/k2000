@@ -1,13 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Cocktails from '@/components/Cocktails'
+import Ingredients from '@/components/Ingredients'
 import Settings from '@/components/Settings'
-import VueResource from 'vue-resource'
 
 Vue.use(Router)
-Vue.use(VueResource)
-
-Vue.http.options.root = 'http://localhost:8080'
 
 export default new Router({
   routes: [
@@ -15,6 +12,11 @@ export default new Router({
       path: '/',
       name: 'cocktails',
       component: Cocktails
+    },
+    {
+      path: '/ingredients',
+      name: 'ingredients',
+      component: Ingredients
     },
     {
       path: '/settings',
