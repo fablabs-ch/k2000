@@ -8,11 +8,12 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
-#include "BasicStepperDriver.h"
-#include "HX711.h"
+#include <BasicStepperDriver.h>
+#include <HX711.h>
 #ifdef __AVR__
   #include <avr/power.h>
 #endif
+#include "cocktail-serial.h";
 
 
 //===== Carrier Configuration =====
@@ -49,6 +50,7 @@ Servo servo[NBSERVOS];                                  //Servo object in an arr
 HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK);                         	//Initialize loadcell on I2C pins
 Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
+CocktailSerial cocktailSerial(&Serial);
 
 int currentPosition =0;
 int steps_to_do=0;
@@ -60,6 +62,19 @@ int currentWeight=0;
 int infill_purcentage=0;
 int pixelGlassToDisplay=0;
 int pixelFrameToDisplay=0;
+
+void homeFunction(){
+    Serial.println("Home called");
+}
+void tareFunction(){
+    Serial.println("Tare called");
+}
+void fillFunction(int distMm, int weightGr){
+    Serial.print("Fill called, dist=");
+    Serial.print(distMm);
+    Serial.print(", weight=");
+    Serial.println(weightGr);
+}
 
 void setup() {
 	Serial.begin(115200);                       	  //Start serial communication to 115200
@@ -76,10 +91,10 @@ void setup() {
 
 	for(int i=0; i<NBSERVOS; i++){
         servo[i].attach(servo_pins[i]);
-     }
+    }
+
+    cocktailSerial.registerFunctions((void*)homeFunction, (void*)tareFunction, (void*)fillFunction);
 }
-
-
 
 
 //=== CARRIER =================================================================================================================================
@@ -152,6 +167,7 @@ void fill(){										                  //Open Servo x while weight is not equal
 
  
 void loop() {
+    cocktailSerial.run();
 
 /*
 		//Status 	- s:{distanceInMm}:{weightInGr}
