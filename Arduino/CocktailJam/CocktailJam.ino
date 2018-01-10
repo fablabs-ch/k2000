@@ -18,7 +18,7 @@
 
 //===== Carrier Configuration =====
 //Homing
-#define PIN_HOM 53                            			    //Switch pin for homing (endstop)
+#define PIN_HOME 53                            			    //Switch pin for homing (endstop)
 #define MAXPOSITION 1000							             //Maximum carrier travel in millimeter
 
 //-Stepper
@@ -30,9 +30,8 @@
 #define PIN_FRAME_LED 45                         	//Data IN neopixel strip
 #define NBPIXELS_FRAME 40                       	//LED Quantity on neopixel strip
 
-#define DIR 3                                      //Pin on Pololu 4988
-#define STEP 2
-
+#define PIN_DIR 3                                      //Pin on Pololu 4988
+#define PIN_STEP 2
 
 #define STEPS_PER_MM  80 							             //Step per millimeter: (step per revolution * driver_microstep) / (belt pitch * teeth number pulley) => (200*16)/(2*20)
 #define MOTOR_ACCEL 2000
@@ -45,7 +44,7 @@
 #define LOAD_CELL_DOUT  3
 #define LOAD_CELL_CLK   2
 
-BasicStepperDriver stepper(MOTOR_STEPS, DIR, STEP);
+BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP);
 Servo servo[NBSERVOS];                                  //Servo object in an array
 HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK);                         	//Initialize loadcell on I2C pins
 Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
@@ -79,8 +78,8 @@ void fillFunction(int distMm, int weightGr){
 void setup() {
 	Serial.begin(115200);                       	  //Start serial communication to 115200
 
-    pinMode(PIN_HOM,INPUT);
-    digitalWrite(PIN_HOM, HIGH);                       //Activate pullup home pin
+    pinMode(PIN_HOME,INPUT);
+    digitalWrite(PIN_HOME, HIGH);                       //Activate pullup home pin
   
 	stepper.begin(RPM, MICROSTEPS);
 	stepper.enable();
@@ -102,7 +101,7 @@ void homing(){// Initialize carrier position
     stepper.move(50*MICROSTEPS);
 
     int j=0;
-    int endstop=digitalRead(PIN_HOM);
+    int endstop=digitalRead(PIN_HOME);
 
     if(endstop==LOW){            				    //While home switch is not activated move stepper back to it.
         j--;

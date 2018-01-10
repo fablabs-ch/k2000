@@ -5,6 +5,10 @@
 
 typedef void (*FN_CALLBACK)(int, int);
 
+/**
+ * This class parse the serial commands
+ * See https://github.com/fablabs-ch/bar-o-matic/wiki/Protocol-Rpi---Arduino
+ */
 class CocktailSerial {
 public:
 
