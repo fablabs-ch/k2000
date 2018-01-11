@@ -70,7 +70,7 @@ int targetWeight = 0;                                    // Weight initializatio
 int currentWeight = 0;
 int infill_purcentage = 0;
 int pixelGlassToDisplay = 0;
-int pixelFrameToDisplay = 0;
+int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
 
 //=== CARRIER =================================================================================================================================
 void moveCarrierToHome()
@@ -100,17 +100,18 @@ void moveCarrierToPosition(distMm)
 
     pixelFrameToDisplay = (targetPosition / MAXPOSITION) / NBPIXELS_FRAME; // Calculate until which pixel the leds have to be turned on according to sent position.
 
+    // TODO review: We need to also clear old pixels?
     for (int i = 0; i < pixelFrameToDisplay; i++)
     {
         pixels_frame.setPixelColor(i, pixels_frame.Color(0, 150, 0)); // Set green color
-        pixels_frame.show();
     }
+    pixels_frame.show();
 
     steps_to_do = (targetPosition - currentPosition) * STEPS_PER_MM;
 
     stepper.move(steps_to_do);
     currentPosition = targetPosition;
-    fill();
+    //fill(); // TODO: review why fill? since it is send by server after we send OK
     Serial.println("OK");
 }
 
