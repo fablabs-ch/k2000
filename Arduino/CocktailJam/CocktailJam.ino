@@ -86,17 +86,16 @@ void moveCarrierToHome()
         j--;
         stepper.move(j);
         // While home switch is not activated move stepper back to it.
-        moveCarrierToHome()
-    ()
+        moveCarrierToHome();
     }
     currentPosition = 0;
     Serial.println("OK"); // Send position confirmation
 }
 
-void moveCarrierToPosition(distMm)
+void moveCarrierToPosition(int distMm)
 {
 
-    int targetPosition = (distMm);
+    int targetPosition = distMm;
 
     pixelFrameToDisplay = (targetPosition / MAXPOSITION) / NBPIXELS_FRAME; // Calculate until which pixel the leds have to be turned on according to sent position.
 
@@ -113,14 +112,15 @@ void moveCarrierToPosition(distMm)
     currentPosition = targetPosition;
     //fill(); // TODO: review why fill? since it is send by server after we send OK
     Serial.println("OK");
+    // TODO: review do we not need cocktailSerial.run() ?
 }
 
 //=== WEIGHT & FILL============================================================================================================================
-void tareFunction()
-{ // Check glass tare
+void tareScale()
+{
     Serial.println("Tare called");
-    scale.tare();         //Reset the scale to zero
-    Serial.println("OK"); //Send tare confirmation
+    scale.tare();         // Reset the scale to zero
+    Serial.println("OK"); // Send tare confirmation
     cocktailSerial.run();
 }
 
@@ -132,7 +132,7 @@ float getWeight()
     return scale.get_units();
 }
 
-void fillFunction(int distMm, int weightGr, int nServo)
+void fillGlass(int distMm, int weightGr, int nServo)
 { //Open Servo x while weight is not equal target weight including glass animation
     Serial.print("Fill called, dist=");
     Serial.print(distMm);
@@ -155,12 +155,12 @@ void fillFunction(int distMm, int weightGr, int nServo)
         cocktailSerial.run();
     } while (currentWeight < targetWeight);
 
-    moveCarrierToPosition
-(distMm);
+    // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
+    moveCarrierToPosition(distMm);
     cocktailSerial.run();
 }
 
-void closeServos()
+void closeAllServos()
 {
     for (int s = 0; s < NBSERVOS; s++)
     {
@@ -170,10 +170,10 @@ void closeServos()
 
 void setup()
 {
-    Serial.begin(115200); // Start serial communication to 115200
+    Serial.begin(115200);
 
     pinMode(PIN_HOME, INPUT);
-    digitalWrite(PIN_HOME, HIGH); //Activate pullup home pin
+    digitalWrite(PIN_HOME, HIGH); // Activate pullup home pin
 
     stepper.begin(RPM, MICROSTEPS);
     stepper.enable();
@@ -187,14 +187,14 @@ void setup()
         servo[i].attach(servo_pins[i]);
     }
 
-    closeServos();
-    tareFunction();
+    closeAllServos();
+    tareScale();
 
-    cocktailSerial.registerFunctions((void *)moveCarrierToHome
-, (void *)tareFunction, (void *)fillFunction);
-}
+    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass);
+ }
 
 void loop()
 {
     cocktailSerial.run();
+    //TODO: where do we not need a delay?
 }

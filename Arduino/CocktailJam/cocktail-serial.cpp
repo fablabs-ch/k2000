@@ -11,6 +11,7 @@ void CocktailSerial::registerFunctions(FN_CALLBACK homeFunc, FN_CALLBACK tareFun
     this->fillFunc = fillFunc;
 }
 
+// TODO: why run? could we not use prinln from serial?
 void CocktailSerial::run()
 {
     if (stream)
