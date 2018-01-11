@@ -9,27 +9,26 @@ typedef void (*FN_CALLBACK)(int, int);
  * This class parse the serial commands
  * See https://github.com/fablabs-ch/bar-o-matic/wiki/Protocol-Rpi---Arduino
  */
-class CocktailSerial {
-public:
+class CocktailSerial
+{
+  public:
+    CocktailSerial(Stream *stream);
 
-	CocktailSerial(Stream *stream);
+    void registerFunctions(FN_CALLBACK homeFunc, FN_CALLBACK tareFunc, FN_CALLBACK fillFunc);
 
-	void registerFunctions(FN_CALLBACK homeFunc, FN_CALLBACK tareFunc, FN_CALLBACK fillFunc);
+    void run();
 
-	void run();
+  private:
+    void anaylseLine(String &line);
+    bool call(FN_CALLBACK func, int arg1 = -1, int arg2 = -1);
 
-private:
+    Stream *stream;
+    String buffer;
 
-	void anaylseLine(String &line);
-	bool call(FN_CALLBACK func, int arg1 = -1, int arg2 = -1);
-
-	Stream* stream;
-	String buffer;
-
-	FN_CALLBACK homeFunc = 0;
-	FN_CALLBACK tareFunc = 0;
-	FN_CALLBACK fillFunc = 0;;
-
+    FN_CALLBACK homeFunc = 0;
+    FN_CALLBACK tareFunc = 0;
+    FN_CALLBACK fillFunc = 0;
+    ;
 };
 
 #endif
