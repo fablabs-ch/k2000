@@ -22,7 +22,7 @@
 //=== MAIN CONFIGURATION =================================================================================================================================
 
 //Homing
-#define PIN_HOME 53                            		//Switch pin for homing (endstop)
+#define PIN_HOME 53									//Switch pin for homing (endstop)
 #define MAXPOSITION 1000							//Maximum carrier travel in millimeter. *Depending on machine size
 
 //-Stepper
@@ -36,7 +36,7 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS)/(BELT_PITCH*TEETHPULLEY); 	/
 #define MOTOR_ACCEL_SPEED 2000				// Set acceleration speed
 #define MOTOR_DECEL_SPEED 1000				// Set deceleration speed
 
-#define PIN_DIR 3                                   		//Pin on Pololu 4988
+#define PIN_DIR 3											//Pin on Pololu 4988
 #define PIN_STEP 2
 
 //-Servo
@@ -57,8 +57,8 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS)/(BELT_PITCH*TEETHPULLEY); 	/
 
 
 BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP);
-Servo servo[NBSERVOS];                              					//Servo object in an array
-HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK);         //Initialize loadcell on I2C pins
+Servo servo[NBSERVOS];												//Servo object in an array
+HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK);			//Initialize loadcell on I2C pins
 Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
 CocktailSerial cocktailSerial(&Serial);
@@ -67,8 +67,8 @@ CocktailSerial cocktailSerial(&Serial);
 int currentPosition =0;
 int steps_to_do=0;
 int endstop=0;
-int servo_pins[10]={4,5,6,7,8,9,10,11,12,13};	    //Define servo pins in an array
-float CALIBRATION_FACTOR=-10000000;            //Change this calibration factor as per your load cell once it is found you many need to vary it in thousands
+int servo_pins[10]={4,5,6,7,8,9,10,11,12,13};				//Define servo pins in an array
+float CALIBRATION_FACTOR=-10000000;						//Change this calibration factor as per your load cell once it is found you many need to vary it in thousands
 int targetWeight=0;											//Weight initialization
 int currentWeight=0;
 int infill_purcentage=0;
@@ -85,25 +85,25 @@ void homeFunction(){									// Initialize carrier position
     Serial.println("Home called");
 	stepper.move(50*MICROSTEPS);
 
-    int j=0;
+	int j=0;
     int endstop=digitalRead(PIN_HOME);
 
-    if(endstop==LOW){            				    //While home switch is not activated move stepper back to it.
+    if(endstop==LOW){								    //While home switch is not activated move stepper back to it.
         j--;
         stepper.move(j);
-    }
-    currentPosition = 0;
-    Serial.println("OK");                      	 		//Send position confirmation
+	}
+	currentPosition = 0;
+	Serial.println("OK");									//Send position confirmation
 }
 
-void move_carrier(){									//Move carrier
+void moveCarrier(){									//Move carrier
 
 	int targetPosition = (distMm);
 
 	pixelFrameToDisplay=(targetPosition/MAXPOSITION)/NBPIXELS_FRAME;	//Calculate until which pixel the leds have to be turned on according to sent position.
 
     for(int i=0;i<pixelFrameToDisplay;i++){
-        pixels_frame.setPixelColor(i, pixels_frame.Color(0,150,0));  	//Set green color
+        pixels_frame.setPixelColor(i, pixels_frame.Color(0,150,0));					//Set green color
         pixels_frame.show();
     }
 	
@@ -119,14 +119,14 @@ void move_carrier(){									//Move carrier
 
 
 //=== WEIGHT & FILL============================================================================================================================
-void tareFunction(){ 								// Check glass tare
+void tareFunction(){								// Check glass tare
 	Serial.println("Tare called");
-	scale.tare();                                 		//Reset the scale to zero
-	Serial.println("OK");                        	//Send tare confirmation
+	scale.tare();										//Reset the scale to zero
+	Serial.println("OK");							//Send tare confirmation
 	cocktailSerial.run();
 }
 
-float get_weight(){                              	//Check glass weight and return it
+float getWeight(){									//Check glass weight and return it
     scale.set_scale(CALIBRATION_FACTOR);
     Serial.println(scale.get_units(), 5);
 	cocktailSerial.run();
@@ -144,25 +144,25 @@ void fillFunction(int distMm, int weightGr, int nServo){		//Open Servo x while w
 	servo[nServo].write(SERVO_CLOSE_DEGR);
 	
 	targetWeight=weightGr;
-	currentWeight=get_weight();
+	currentWeight=getWeight();
 
 	do{
-		servo[nServo].write(SERVO_OPEN_DEGR);														//Fill glass
+		servo[nServo].write(SERVO_OPEN_DEGR);															//Fill glass
 		pixelGlassToDisplay=NBPIXELS_GLASS*currentWeight/targetWeight;					//Calculate which pixel to display according to current weight
 		pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50,90,255));	//Set dark blue color
 		pixels_glass.show(); 																						//Show glass animation	
 		cocktailSerial.run();
 	}while(currentWeight<targetWeight);
 	
-	move_carrier(distMm);
+	moveCarrier(distMm);
 	cocktailSerial.run();
 }
 
 void closeServos(){
 	 for(int s=0; s<NBSERVOS; s++)
-   {
-      servo[s].write(SERVO_CLOSE_DEGR);
-   }
+	{
+		servo[s].write(SERVO_CLOSE_DEGR);
+	}
 	
 }
 
@@ -175,10 +175,10 @@ void closeServos(){
 
 
 void setup() {
-	Serial.begin(115200);                       			//Start serial communication to 115200
+	Serial.begin(115200);									//Start serial communication to 115200
 
     pinMode(PIN_HOME,INPUT);
-    digitalWrite(PIN_HOME, HIGH);                   //Activate pullup home pin
+    digitalWrite(PIN_HOME, HIGH);						//Activate pullup home pin
   
 	stepper.begin(RPM, MICROSTEPS);
 	stepper.enable();
@@ -188,8 +188,8 @@ void setup() {
 	int j=4;
 
 	for(int i=0; i<NBSERVOS; i++){
-        servo[i].attach(servo_pins[i]);
-    }
+		servo[i].attach(servo_pins[i]);
+	}
 	
 	closeServos();
 	tareFunction();
