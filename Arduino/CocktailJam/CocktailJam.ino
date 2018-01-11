@@ -1,7 +1,11 @@
 /*
- * Arduino code drives stepper motor to move glass carrier and play led animations.
- * Raspberry Pi sends commands through serial and Arduino send feedbacks about status
+ * This Arduino code manages glass moving carrier, led animation and glass infill.
+ * Raspberry Pi sends commands through serial and Arduino do the rest.
  * 
+ * For hardware connection, see schematic: https://github.com/fablabs-ch/bar-o-matic/blob/master/hardware/bar-o-matic_bb.png
+ *
+ * Ensure to set the correct parameters according to the hardware you have choosen. All constant below marked with * have to be customized to avoid bad behavior.
+ *
  * FabLabs-CH for swiss fablabs
  * Copyright (C) 2018  Christophe Cachin & Gaétan Collaud
  */
@@ -15,41 +19,50 @@
 #endif
 #include "cocktail-serial.h";
 
+//=== MAIN CONFIGURATION =================================================================================================================================
 
-//===== Carrier Configuration =====
 //Homing
 #define PIN_HOME 53                            		//Switch pin for homing (endstop)
-#define MAXPOSITION 1000							//Maximum carrier travel in millimeter
+#define MAXPOSITION 1000							//Maximum carrier travel in millimeter. *Depending on machine size
 
 //-Stepper
-#define MOTOR_STEPS 200
+#define MOTOR_STEPS 200							//-Number of steps for choosen motor stepper. *Read the motor datasheet to set it properly
 #define RPM 120
-#define MICROSTEPS 16
+#define MICROSTEPS 16								//Define microstep. *Depends on your hardware configuration. 1, 8 or 16. 16 is maybe to fine for this machine has to be tested
+#define BELTPITCH 2										//Distance between two teeth on the belt. *Read the belt datasheet for correct parameter
+#define TEETHPULLEY 20								//Number of teeth on the pulley. *Read the pulley datasheet for correct parameter
+const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS)/(BELT_PITCH*TEETHPULLEY); 	// Number of step to get 1mm
+
+#define MOTOR_ACCEL_SPEED 2000				// Set acceleration speed
+#define MOTOR_DECEL_SPEED 1000				// Set deceleration speed
+
+#define PIN_DIR 3                                   		//Pin on Pololu 4988
+#define PIN_STEP 2
+
+//-Servo
+#define NBSERVOS 10
+#define SERVO_OPEN_DEGR 0						//Servo angle for open state. *set the correct angle to get correct flow
+#define SERVO_CLOSE_DEGR 180					//Servo angle for close state. *set the correct angle to close the flow properly
+
+//-Ledstrip
 #define PIN_GLASS_LED  44                        	//Data IN circular neopixel
-#define NBPIXELS_GLASS 16                      	 	//LED Quantity on circular neopixel
+#define NBPIXELS_GLASS 16							//LED Quantity on circular neopixel
 #define PIN_FRAME_LED 45                         	//Data IN neopixel strip
 #define NBPIXELS_FRAME 40                       	//LED Quantity on neopixel strip
 
-#define PIN_DIR 3                                   //Pin on Pololu 4988
-#define PIN_STEP 2
-
-#define STEPS_PER_MM  80 							//Step per millimeter: (step per revolution * driver_microstep) / (belt pitch * teeth number pulley) => (200*16)/(2*20)
-#define MOTOR_ACCEL 2000
-#define MOTOR_DECEL 1000
-
-#define SERVO_OPEN 0								//Servo angle for open state
-#define SERVO_CLOSE 180								//Servo angle for close state
-#define NBSERVOS 10
-
+//-LoadCell
 #define LOAD_CELL_DOUT  3
 #define LOAD_CELL_CLK   2
 
+
+
 BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP);
-Servo servo[NBSERVOS];                              //Servo object in an array
+Servo servo[NBSERVOS];                              					//Servo object in an array
 HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK);         //Initialize loadcell on I2C pins
 Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
 CocktailSerial cocktailSerial(&Serial);
+
 
 int currentPosition =0;
 int steps_to_do=0;
@@ -128,13 +141,13 @@ void fillFunction(int distMm, int weightGr, int nServo){		//Open Servo x while w
 	Serial.print(", Servo=");
     Serial.println(nServo);
 	
-	servo[nServo].write(SERVO_CLOSE);
+	servo[nServo].write(SERVO_CLOSE_DEGR);
 	
 	targetWeight=weightGr;
 	currentWeight=get_weight();
 
 	do{
-		servo[nServo].write(SERVO_OPEN);																//Fill glass
+		servo[nServo].write(SERVO_OPEN_DEGR);														//Fill glass
 		pixelGlassToDisplay=NBPIXELS_GLASS*currentWeight/targetWeight;					//Calculate which pixel to display according to current weight
 		pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50,90,255));	//Set dark blue color
 		pixels_glass.show(); 																						//Show glass animation	
@@ -148,7 +161,7 @@ void fillFunction(int distMm, int weightGr, int nServo){		//Open Servo x while w
 void closeServos(){
 	 for(int s=0; s<NBSERVOS; s++)
    {
-      servo[s].write(SERVO_CLOSE);
+      servo[s].write(SERVO_CLOSE_DEGR);
    }
 	
 }
@@ -169,7 +182,7 @@ void setup() {
   
 	stepper.begin(RPM, MICROSTEPS);
 	stepper.enable();
-	stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
+	stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL_SPEED, MOTOR_DECEL_SPEED);
 
 	int i=0;
 	int j=4;
