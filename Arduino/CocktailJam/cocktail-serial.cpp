@@ -45,8 +45,10 @@ void CocktailSerial::anaylseLine(String &line)
 
         int firstIndex = line.length() > 1 ? 1 : -1; // first ':' always at second char, otherwise there is no ':'
         int secondIndex = line.indexOf(':', firstIndex + 1);
+        int thirdIndex = line.indexOf(':', secondIndex + 1);
         int arg1 = -1;
         int arg2 = -1;
+        int arg3 = -1;
 
         if (firstIndex != -1)
         {
@@ -54,7 +56,11 @@ void CocktailSerial::anaylseLine(String &line)
         }
         if (secondIndex != -1)
         {
-            arg2 = line.substring(secondIndex + 1).toInt();
+            arg2 = line.substring(secondIndex + 1, thirdIndex).toInt();
+        }
+        if (thirdIndex != -1)
+        {
+            arg3 = line.substring(thirdIndex + 1).toInt();
         }
 
         switch (cmd)
@@ -66,7 +72,7 @@ void CocktailSerial::anaylseLine(String &line)
             called = this->call(this->tareFunc);
             break;
         case 'f':
-            called = this->call(this->fillFunc, arg1, arg2);
+            called = this->call(this->fillFunc, arg1, arg2, arg3);
             break;
         }
 
@@ -74,15 +80,18 @@ void CocktailSerial::anaylseLine(String &line)
         {
             stream->print("e:unknown:");
             stream->println(line);
+        }else{
+            // print the same command line to indicate that we received it correctly
+            stream->println(line);
         }
     }
 }
 
-bool CocktailSerial::call(FN_CALLBACK func, int arg1 = -1, int arg2 = -1)
+bool CocktailSerial::call(FN_CALLBACK func, int arg1, int arg2, int arg3)
 {
     if (func)
     {
-        func(arg1, arg2);
+        func(arg1, arg2, arg3);
         return true;
     }
     return false;
