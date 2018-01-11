@@ -73,7 +73,7 @@ int pixelGlassToDisplay = 0;
 int pixelFrameToDisplay = 0;
 
 //=== CARRIER =================================================================================================================================
-void homeFunction()
+void moveCarrierToHome()
 { // Initialize carrier position
     Serial.println("Home called");
     stepper.move(50 * MICROSTEPS);
@@ -86,13 +86,14 @@ void homeFunction()
         j--;
         stepper.move(j);
         // While home switch is not activated move stepper back to it.
-        homeFunction()
+        moveCarrierToHome()
+    ()
     }
     currentPosition = 0;
     Serial.println("OK"); // Send position confirmation
 }
 
-void moveCarrier()
+void moveCarrierToPosition(distMm)
 {
 
     int targetPosition = (distMm);
@@ -153,7 +154,8 @@ void fillFunction(int distMm, int weightGr, int nServo)
         cocktailSerial.run();
     } while (currentWeight < targetWeight);
 
-    moveCarrier(distMm);
+    moveCarrierToPosition
+(distMm);
     cocktailSerial.run();
 }
 
@@ -187,7 +189,8 @@ void setup()
     closeServos();
     tareFunction();
 
-    cocktailSerial.registerFunctions((void *)homeFunction, (void *)tareFunction, (void *)fillFunction);
+    cocktailSerial.registerFunctions((void *)moveCarrierToHome
+, (void *)tareFunction, (void *)fillFunction);
 }
 
 void loop()
