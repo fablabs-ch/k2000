@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-typedef void (*FN_CALLBACK)(int, int);
+typedef void (*FN_CALLBACK)(int, int, int);
 
 /**
  * This class parse the serial commands
@@ -20,7 +20,7 @@ class CocktailSerial
 
   private:
     void anaylseLine(String &line);
-    bool call(FN_CALLBACK func, int arg1 = -1, int arg2 = -1);
+    bool call(FN_CALLBACK func, int arg1 = -1, int arg2 = -1, int arg3 = -1);
 
     Stream *stream;
     String buffer;

@@ -132,14 +132,14 @@ float getWeight()
     return scale.get_units();
 }
 
-void fillGlass(int distMm, int weightGr, int nServo)
+void fillGlass(int distMm, int nServo, int weightGr)
 { //Open Servo x while weight is not equal target weight including glass animation
     Serial.print("Fill called, dist=");
     Serial.print(distMm);
+    Serial.print(", servo=");
+    Serial.print(nServo);
     Serial.print(", weight=");
     Serial.println(weightGr);
-    Serial.print(", Servo=");
-    Serial.println(nServo);
 
     servo[nServo].write(SERVO_CLOSE_DEGR);
 
@@ -188,9 +188,10 @@ void setup()
     }
 
     closeAllServos();
-    tareScale();
+//    tareScale();
 
     cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass);
+    Serial.println("Ready");
  }
 
 void loop()
