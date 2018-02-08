@@ -22,7 +22,8 @@
 // === MAIN CONFIGURATION =================================================================================================================================
 
 // Homing
-#define PIN_HOME 53      // Switch pin for homing (endstop)
+//#define PIN_HOME 53      // Switch pin for homing (endstop)
+#define PIN_HOME 9      // Switch pin for homing (endstop)
 #define MAXPOSITION 1000 // Maximum carrier travel in millimeter. *Depending on machine size
 
 // Stepper
@@ -33,14 +34,15 @@
 #define TEETHPULLEY 20                                                            // Number of teeth on the pulley. *Read the pulley datasheet for correct parameter
 const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY); // Number of step to get 1mm
 
-#define MOTOR_ACCEL_SPEED 2000 // Set acceleration speed
-#define MOTOR_DECEL_SPEED 1000 // Set deceleration speed
+#define MOTOR_ACCEL_SPEED 200 // Set acceleration speed
+#define MOTOR_DECEL_SPEED 100 // Set deceleration speed
 
 #define PIN_DIR 3 // Pin on Pololu 4988
 #define PIN_STEP 2
+#define PIN_ENABLE 4
 
 // Servo
-#define NBSERVOS 10
+#define NBSERVOS 6
 #define SERVO_OPEN_DEGR 0    // Servo angle for open state. *set the correct angle to get correct flow
 #define SERVO_CLOSE_DEGR 180 // Servo angle for close state. *set the correct angle to close the flow properly
 
@@ -51,10 +53,10 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY)
 #define NBPIXELS_FRAME 40 // LED Quantity on neopixel strip
 
 // LoadCell
-#define LOAD_CELL_DOUT 3
-#define LOAD_CELL_CLK 2
+#define LOAD_CELL_DOUT 5
+#define LOAD_CELL_CLK 6
 
-BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP);
+BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP, PIN_ENABLE);
 Servo servo[NBSERVOS];                      //Servo object in an array
 HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
 Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
@@ -64,8 +66,8 @@ CocktailSerial cocktailSerial(&Serial);
 int currentPosition = 0;
 int steps_to_do = 0;
 int endstop = 0;
-int servo_pins[10] = {4, 5, 6, 7, 8, 9, 10, 11, 12, 13}; // Define servo pins in an array
-float CALIBRATION_FACTOR = -10000000;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
+int servo_pins[NBSERVOS] = { 7, 8, 10, 11, 12, 13}; // Define servo pins in an array
+float CALIBRATION_FACTOR = -100000;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
 int targetWeight = 0;                                    // Weight initialization
 int currentWeight = 0;
 int infill_purcentage = 0;
@@ -76,18 +78,32 @@ int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
 void moveCarrierToHome()
 { // Initialize carrier position
     Serial.println("Home called");
-    stepper.move(50 * MICROSTEPS);
+    //stepper.move(50 * MICROSTEPS);
 
     int j = 0;
     int endstop = digitalRead(PIN_HOME);
 
-    if (endstop == LOW)
+  stepper.enable();
+    stepper.setRPM(50);
+    //stepper.startMove(200);
+      stepper.startMove(10000 * MOTOR_STEPS * MICROSTEPS);
+
+    while (endstop == LOW)
     {
-        j--;
-        stepper.move(j);
+      stepper.nextAction();
+        endstop = digitalRead(PIN_HOME);
+        
+        //stepper.move(MICROSTEPS);
         // While home switch is not activated move stepper back to it.
-        moveCarrierToHome();
+        //moveCarrierToHome();
     }
+    stepper.startBrake();
+
+    while(stepper.getCurrentState() != stepper.STOPPED)
+      stepper.nextAction();
+
+    stepper.stop();
+    stepper.disable();
     currentPosition = 0;
     Serial.println("OK"); // Send position confirmation
 }
@@ -144,10 +160,10 @@ void fillGlass(int distMm, int nServo, int weightGr)
     servo[nServo].write(SERVO_CLOSE_DEGR);
 
     targetWeight = weightGr;
-    currentWeight = getWeight();
 
     do
     {
+        currentWeight = getWeight();
         servo[nServo].write(SERVO_OPEN_DEGR);                                             //Fill glass
         pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
         pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
@@ -176,7 +192,7 @@ void setup()
     digitalWrite(PIN_HOME, HIGH); // Activate pullup home pin
 
     stepper.begin(RPM, MICROSTEPS);
-    stepper.enable();
+    stepper.disable();
     stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL_SPEED, MOTOR_DECEL_SPEED);
 
     int i = 0;
@@ -198,4 +214,8 @@ void loop()
 {
     cocktailSerial.run();
     //TODO: where do we not need a delay?
+    //stepper.move(50* MICROSTEPS);
+
+    //delay(200);
+    //getWeight();
 }
