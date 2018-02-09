@@ -34,8 +34,9 @@
 #define TEETHPULLEY 20                                                            // Number of teeth on the pulley. *Read the pulley datasheet for correct parameter
 const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY); // Number of step to get 1mm
 
-#define MOTOR_ACCEL_SPEED 200 // Set acceleration speed
-#define MOTOR_DECEL_SPEED 100 // Set deceleration speed
+#define MOTOR_RPM 100
+#define MOTOR_ACCEL_SPEED 500 // Set acceleration speed
+#define MOTOR_DECEL_SPEED 500 // Set deceleration speed
 
 #define PIN_DIR 3 // Pin on Pololu 4988
 #define PIN_STEP 2
@@ -84,9 +85,9 @@ void moveCarrierToHome()
     int endstop = digitalRead(PIN_HOME);
 
   stepper.enable();
-    stepper.setRPM(50);
+    stepper.setRPM(MOTOR_RPM);
     //stepper.startMove(200);
-      stepper.startMove(10000 * MOTOR_STEPS * MICROSTEPS);
+      stepper.startMove(-100000 * MOTOR_STEPS * MICROSTEPS);
 
     while (endstop == LOW)
     {
@@ -124,7 +125,9 @@ void moveCarrierToPosition(int distMm)
 
     steps_to_do = (targetPosition - currentPosition) * STEPS_PER_MM;
 
+    stepper.enable();
     stepper.move(steps_to_do);
+    stepper.disable();
     currentPosition = targetPosition;
     //fill(); // TODO: review why fill? since it is send by server after we send OK
     Serial.println("OK");
@@ -157,22 +160,27 @@ void fillGlass(int distMm, int nServo, int weightGr)
     Serial.print(", weight=");
     Serial.println(weightGr);
 
-    servo[nServo].write(SERVO_CLOSE_DEGR);
+    // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
+    moveCarrierToPosition(distMm);
+
+    servo[nServo].write(SERVO_OPEN_DEGR);
+   
 
     targetWeight = weightGr;
 
     do
     {
         currentWeight = getWeight();
-        servo[nServo].write(SERVO_OPEN_DEGR);                                             //Fill glass
+        //servo[nServo].write(SERVO_OPEN_DEGR);                                             //Fill glass
         pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
         pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
         pixels_glass.show();                                                              //Show glass animation
         cocktailSerial.run();
     } while (currentWeight < targetWeight);
 
-    // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
-    moveCarrierToPosition(distMm);
+    servo[nServo].write(SERVO_CLOSE_DEGR);
+
+    
     cocktailSerial.run();
 }
 
