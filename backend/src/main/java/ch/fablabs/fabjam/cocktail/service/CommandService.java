@@ -34,7 +34,7 @@ public class CommandService {
 	}
 
 	public boolean servoAperture(int servoId, int aperture) {
-		String command = new StringBuilder("s:").append(servoId).append(':').append(aperture).toString();
+		String command = new StringBuilder("a:").append(servoId).append(':').append(aperture).toString();
 		return serialConnectionStarter.sendMessage(command);
 	}
 
