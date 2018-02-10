@@ -13,7 +13,7 @@ import router from './router'
 Vue.use(Vuetify)
 
 Vue.use(VueResource)
-Vue.url.options.root = 'http://10.10.0.99:8080/'
+Vue.url.options.root = '/api/'
 
 Vue.config.productionTip = false
 
@@ -28,6 +28,7 @@ new Vue({
     }
   },
   created () {
+    this.$http.get('recipies').then(response => {
     this.$http.get('api/recipies').then(response => {
       this.cocktails = response.data
       // backup qty to restore after customized version
@@ -43,6 +44,7 @@ new Vue({
     const cocktailsDB = require('../static/cocktail.json')
     this.cocktails = cocktailsDB.recipes
     */
+    this.$http.get('ingredients').then(response => {
     this.$http.get('api/ingredients').then(response => {
       this.ingredients = response.data.reduce((ingredients, i) => {
         ingredients[i.id] = i

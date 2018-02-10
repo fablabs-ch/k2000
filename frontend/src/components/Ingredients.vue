@@ -22,7 +22,7 @@
         </v-card>
         <v-card>
           <v-list two-line>
-            <ingredient-list-item :value="ingrident" v-for="(ingrident, id) in $root.ingredients" :key="id" @change="save"></ingredient-list-item>
+            <ingredient-list-item :canDelete="true" :value="ingrident" v-for="(ingrident, id) in $root.ingredients" :key="id" @change="save" @delete="deleteItem"></ingredient-list-item>
           </v-list>
        </v-card>
       </v-flex>
@@ -42,20 +42,27 @@ export default {
   methods: {
     createNewIngredient () {
       return {
-        type: 'ALCOOL',
+        type: 'ALCOHOL',
         name: '',
         color: '#FF0000'
       }
     },
     add () {
-      console.log('TODO: hookup api which will provide an id')
-      const savedIngredient = this.newIngredient
-      savedIngredient.id = new Date().getTime()
-      this.$root.ingredients[savedIngredient.id] = savedIngredient
-      this.newIngredient = this.createNewIngredient()
+      this.$http.post('ingredients', this.newIngredient).then(reponse => {
+        const savedIngredient = reponse.data
+        this.$root.ingredients[savedIngredient.id] = savedIngredient
+        this.newIngredient = this.createNewIngredient()
+      })
     },
     save (ingredient) {
-      console.log('TODO: post new data')
+      this.$http.put(`ingredients/${ingredient.id}`, ingredient).then(reponse => {
+        this.$root.notify('Saved!')
+      })
+    },
+    deleteItem (ingredient) {
+      this.$http.delete(`ingredients/${ingredient.id}`, ingredient).then(reponse => {
+        this.$delete(this.$root.ingredients, ingredient.id)
+      })
     }
   },
   components: {
