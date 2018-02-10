@@ -12,8 +12,6 @@ public class HomeAction extends AbstractAction {
 
 	@Override
 	public void run() {
-		int dist = serialService.getDistanceFromHomeInMm().getValue();
-		LOG.debug("dist={}", dist);
-		setFinished(dist<10);
+		setFinished(endOfCommandReceived("h"));
 	}
 }

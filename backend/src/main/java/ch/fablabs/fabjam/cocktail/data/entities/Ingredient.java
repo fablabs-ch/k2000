@@ -10,6 +10,7 @@ public class Ingredient implements ItfData {
 	private String id;
 
 	private String name;
+	private String color;
 	private IngredientType type;
 	private boolean manual;
 }

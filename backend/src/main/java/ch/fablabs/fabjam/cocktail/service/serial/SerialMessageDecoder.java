@@ -18,8 +18,13 @@ public class SerialMessageDecoder {
 	@JmsListener(destination = JmsTopic.SERIAL_INPUT)
 	public void receiveMessage(String rawLine) {
 		String[] split = rawLine.split(":");
-		if (split[0].equals("s")) {
+		String command = split[0];
+		if (command.equals("s")) {
 			decodeStatus(rawLine, split);
+		} else if (command.equals("h") || command.equals("t") || command.equals("f") || command.equals("m") || command.equals("a")) {
+			decodeEndOfCOmmand(rawLine, split);
+		} else if (command.equals("i")) {
+			LOG.trace("Info: {}", rawLine);
 		} else {
 			LOG.warn("Unknown message {}", rawLine);
 		}
@@ -41,5 +46,9 @@ public class SerialMessageDecoder {
 		} else {
 			LOG.error("SerialStatus message must have 3 parts but had {} : {}", parts.length, raw);
 		}
+	}
+
+	protected void decodeEndOfCOmmand(String raw, String[] parts) {
+		jmsTemplate.convertAndSend(JmsTopic.SERIAL_END_OF_COMMAND, parts[0]);
 	}
 }

@@ -8,6 +8,6 @@ public class IngredientConfig implements ItfData {
 	@Id
 	private String id;
 	private String ingredientId;
-	private Long valveDistanceMm;
-	private Long valveId;
+	private Integer valveDistanceMm;
+	private Integer valveId;
 }

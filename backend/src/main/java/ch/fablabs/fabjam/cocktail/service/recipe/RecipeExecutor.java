@@ -2,10 +2,7 @@ package ch.fablabs.fabjam.cocktail.service.recipe;
 
 import ch.fablabs.fabjam.cocktail.data.recipe.RecipeItemFull;
 import ch.fablabs.fabjam.cocktail.service.CommandService;
-import ch.fablabs.fabjam.cocktail.service.recipe.actions.AbstractAction;
-import ch.fablabs.fabjam.cocktail.service.recipe.actions.FillAction;
-import ch.fablabs.fabjam.cocktail.service.recipe.actions.HomeAction;
-import ch.fablabs.fabjam.cocktail.service.recipe.actions.TareAction;
+import ch.fablabs.fabjam.cocktail.service.recipe.actions.*;
 import ch.fablabs.fabjam.cocktail.service.serial.SerialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +32,7 @@ public class RecipeExecutor implements Runnable {
 
 	@Override
 	public void run() {
+		AbstractAction currentAction = null;
 		long totalStart = System.currentTimeMillis();
 		try {
 			LOG.debug("Start recipe of {} items", items.size());
@@ -42,40 +40,45 @@ public class RecipeExecutor implements Runnable {
 			//wait for first status
 			checkStatusDelay();
 
-			for (AbstractAction action : getActionList()) {
+			for (AbstractAction a : getActionList()) {
+				currentAction = a;
 				long actionStart = System.currentTimeMillis();
-				LOG.debug("Start action {}", action);
+				LOG.debug("Start action {}", currentAction);
 
-				action.setSerialService(serialService);
-				action.setCommandService(commandService);
+				currentAction.setSerialService(serialService);
+				currentAction.setCommandService(commandService);
 
 				int iter = 0;
 				boolean timeout;
 
-				action.initialRun();
+				currentAction.start();
 				do {
 					Thread.sleep(delayMs);
-					action.run();
+					currentAction.run();
 					checkStatusDelay();
 					iter++;
-					timeout = (System.currentTimeMillis() - actionStart) >= action.getTimeoutMs();
-				} while (!action.isFinished() && !timeout);
+					timeout = (System.currentTimeMillis() - actionStart) >= currentAction.getTimeoutMs();
+					if (timeout) {
+						currentAction.cancelling();
+					}
+				} while (!currentAction.isFinished() && !timeout);
 
 				long timeMs = System.currentTimeMillis() - actionStart;
 				if (timeout) {
-					LOG.info("Timeout for action {} after {} iterations and {}ms", action, iter, timeMs);
+					LOG.info("Timeout for action {} after {} iterations and {}ms", currentAction, iter, timeMs);
 					break;
 				} else {
-					LOG.info("End of action {} after {} iterations and {}ms", action, iter, timeMs);
+					LOG.info("End of action {} after {} iterations and {}ms", currentAction, iter, timeMs);
 				}
 			}
 
 			LOG.debug("End of recipe after {}ms", (System.currentTimeMillis() - totalStart));
 			endCallback.accept(true);
-		} catch (
-			InterruptedException e)
+		} catch (InterruptedException e) {
+			if (currentAction != null) {
+				currentAction.cancelling();
+			}
 
-		{
 			endCallback.accept(false);
 			LOG.debug("Task interrupted after {}ms", (System.currentTimeMillis() - totalStart));
 		}
@@ -92,7 +95,8 @@ public class RecipeExecutor implements Runnable {
 		actions.add(new TareAction());
 		actions.add(new HomeAction());
 		actions.addAll(items.stream()
-			.map(item -> new FillAction(item))
+//			.map(item -> new FillAction(item))
+			.map(item -> new MoveAction(item.getConfig().getValveDistanceMm()))
 			.collect(Collectors.toList()));
 		actions.add(new HomeAction());
 		return actions;

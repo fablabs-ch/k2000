@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TareAction extends AbstractAction {
 
+	@Override
+	protected void initialRun() {
+		commandService.tare();
+	}
 
 	@Override
 	public void run() {
-		setFinished(true);
-
+		setFinished(endOfCommandReceived("t"));
 	}
 }
