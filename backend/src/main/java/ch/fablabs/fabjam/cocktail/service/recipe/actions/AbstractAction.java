@@ -1,5 +1,6 @@
 package ch.fablabs.fabjam.cocktail.service.recipe.actions;
 
+import ch.fablabs.fabjam.cocktail.service.CommandService;
 import ch.fablabs.fabjam.cocktail.service.serial.SerialService;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,9 @@ abstract public class AbstractAction {
 
 	@Setter
 	protected SerialService serialService;
+
+	@Setter
+	protected CommandService commandService;
 
 	@Setter(AccessLevel.PROTECTED)
 	@Getter

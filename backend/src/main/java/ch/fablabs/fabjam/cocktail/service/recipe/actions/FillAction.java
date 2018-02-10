@@ -14,6 +14,6 @@ public class FillAction extends AbstractAction {
 
 	@Override
 	public void run() {
-setFinished(true);
+		setFinished(true);
 	}
 }

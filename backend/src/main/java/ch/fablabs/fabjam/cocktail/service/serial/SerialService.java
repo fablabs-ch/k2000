@@ -2,13 +2,10 @@ package ch.fablabs.fabjam.cocktail.service.serial;
 
 import ch.fablabs.fabjam.cocktail.data.serial.SerialStatus;
 import ch.fablabs.fabjam.cocktail.data.type.JmsTopic;
-import ch.fablabs.fabjam.cocktail.service.serial.command.AbstractCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
-import rx.Observable;
 import rx.subjects.BehaviorSubject;
-import rx.subjects.Subject;
 
 @Service
 public class SerialService {
@@ -23,7 +20,7 @@ public class SerialService {
 	public SerialService() {
 		this.weightSubject = BehaviorSubject.create(-1);
 		this.distanceFromHomeInMm = BehaviorSubject.create(-1);
-		this.serialStatus = BehaviorSubject.create((SerialStatus)null);
+		this.serialStatus = BehaviorSubject.create((SerialStatus) null);
 	}
 
 	public BehaviorSubject<Integer> getWeightSubject() {
@@ -36,10 +33,6 @@ public class SerialService {
 
 	public BehaviorSubject<SerialStatus> getSerialStatus() {
 		return serialStatus;
-	}
-
-	public boolean sendCommand(AbstractCommand command) {
-		return serialConnectionStarter.sendMessage(command.getCommandAsString());
 	}
 
 	@JmsListener(destination = JmsTopic.SERIAL_STATUS)
