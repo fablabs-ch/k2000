@@ -45,8 +45,8 @@ new Vue({
     this.cocktails = cocktailsDB.recipes
     */
     this.$http.get('ingredients').then(response => {
-    this.$http.get('api/ingredients').then(response => {
-      this.ingredients = response.data.reduce((ingredients, i) => {
+      const serverIngredients = response.data || []
+      this.ingredients = serverIngredients.reduce((ingredients, i) => {
         ingredients[i.id] = i
         return ingredients
       }, {})
