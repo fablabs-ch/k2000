@@ -84,7 +84,7 @@ void moveCarrierToHome()
     int j = 0;
     int endstop = digitalRead(PIN_HOME);
 
-  stepper.enable();
+    stepper.enable();
     stepper.setRPM(MOTOR_RPM);
     //stepper.startMove(200);
       stepper.startMove(-100000 * MOTOR_STEPS * MICROSTEPS);
@@ -93,7 +93,7 @@ void moveCarrierToHome()
     {
       stepper.nextAction();
         endstop = digitalRead(PIN_HOME);
-        
+
         //stepper.move(MICROSTEPS);
         // While home switch is not activated move stepper back to it.
         //moveCarrierToHome();
@@ -151,6 +151,11 @@ float getWeight()
     return scale.get_units();
 }
 
+void servoAperture(int servoId, int apertureInPercent){
+    //TODO convert percentage in degree
+    servo[servoId].write(apertureInPercent);
+}
+
 void fillGlass(int distMm, int nServo, int weightGr)
 { //Open Servo x while weight is not equal target weight including glass animation
     Serial.print("Fill called, dist=");
@@ -164,7 +169,7 @@ void fillGlass(int distMm, int nServo, int weightGr)
     moveCarrierToPosition(distMm);
 
     servo[nServo].write(SERVO_OPEN_DEGR);
-   
+
 
     targetWeight = weightGr;
 
@@ -180,7 +185,7 @@ void fillGlass(int distMm, int nServo, int weightGr)
 
     servo[nServo].write(SERVO_CLOSE_DEGR);
 
-    
+
     cocktailSerial.run();
 }
 
@@ -214,7 +219,7 @@ void setup()
     closeAllServos();
 //    tareScale();
 
-    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass);
+    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture);
     Serial.println("Ready");
  }
 
