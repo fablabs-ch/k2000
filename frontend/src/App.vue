@@ -1,6 +1,13 @@
 <template>
 
   <v-app>
+    <v-snackbar :timeout=2000
+                :top=true
+                :vertical=true
+                v-model="$root.snackbar">
+      {{ $root.snacktext }}
+      <v-btn flat color="pink" @click.native="$root.snackbar = false">Close</v-btn>
+    </v-snackbar>
     <v-navigation-drawer
       v-model="drawer"
       enable-resize-watcher
@@ -39,6 +46,7 @@
     <v-toolbar app fixed clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Bar-Omatic</v-toolbar-title>
+      <status-bar></status-bar>
     </v-toolbar>
     <v-content>
         <router-view></router-view>
@@ -47,11 +55,16 @@
 </template>
 
 <script>
+import StatusBar from '@/components/StatusBar'
+
 export default {
   name: 'app',
   data: () => ({
     drawer: true
-  })
+  }),
+  components: {
+    StatusBar
+  }
 }
 </script>
 

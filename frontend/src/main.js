@@ -24,13 +24,14 @@ new Vue({
     return {
       // global data store access via vm.$root
       cocktails: [],
-      ingredients: {}
+      ingredients: {},
+      snackbar: false,
+      snacktext: ''
     }
   },
   created () {
     this.$http.get('recipies').then(response => {
-    this.$http.get('api/recipies').then(response => {
-      this.cocktails = response.data
+      this.cocktails = response.data || []
       // backup qty to restore after customized version
       this.cocktails.forEach(c => {
         c.items.forEach(i => {
@@ -52,6 +53,12 @@ new Vue({
       }, {})
     })
     // cocktailsDB.ingredients.
+  },
+  methods: {
+    notify (message) {
+      this.snacktext = message
+      this.snackbar = true
+    }
   },
   router,
   template: '<App/>',
