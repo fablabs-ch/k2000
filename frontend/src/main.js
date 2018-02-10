@@ -13,7 +13,7 @@ import router from './router'
 Vue.use(Vuetify)
 
 Vue.use(VueResource)
-// Vue.url.options.root = 'http://10.10.0.99:8080/'
+Vue.url.options.root = '/api/'
 
 Vue.config.productionTip = false
 
@@ -24,12 +24,14 @@ new Vue({
     return {
       // global data store access via vm.$root
       cocktails: [],
-      ingredients: {}
+      ingredients: {},
+      snackbar: false,
+      snacktext: ''
     }
   },
   created () {
-    this.$http.get('api/recipies').then(response => {
-      this.cocktails = response.data
+    this.$http.get('recipies').then(response => {
+      this.cocktails = response.data || []
       // backup qty to restore after customized version
       this.cocktails.forEach(c => {
         c.items.forEach(i => {
@@ -43,13 +45,20 @@ new Vue({
     const cocktailsDB = require('../static/cocktail.json')
     this.cocktails = cocktailsDB.recipes
     */
-    this.$http.get('api/ingredients').then(response => {
-      this.ingredients = response.data.reduce((ingredients, i) => {
+    this.$http.get('ingredients').then(response => {
+      const serverIngredients = response.data || []
+      this.ingredients = serverIngredients.reduce((ingredients, i) => {
         ingredients[i.id] = i
         return ingredients
       }, {})
     })
     // cocktailsDB.ingredients.
+  },
+  methods: {
+    notify (message) {
+      this.snacktext = message
+      this.snackbar = true
+    }
   },
   router,
   template: '<App/>',

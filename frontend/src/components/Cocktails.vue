@@ -6,13 +6,6 @@
       </v-flex>
     </v-layout>
 
-    <v-snackbar :timeout=2000
-                :top=true
-                :vertical=true
-                v-model="snackbar">
-      {{ snacktext }}
-      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
     <order-dialog :order="order" @close="order = null"></order-dialog>
   </v-container>
 </template>
@@ -26,18 +19,14 @@ export default {
   name: 'cocktails',
   data () {
     return {
-      snackbar: false,
-      snacktext: '',
       order: null
     }
   },
   methods: {
-    notify (message) {
-      this.snacktext = message
-      this.snackbar = true
-    },
     handleOrder (order) {
       this.order = order
+    },
+    add () {
     }
   },
   components: {

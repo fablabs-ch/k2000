@@ -27,6 +27,6 @@ public class FillAction extends AbstractAction {
 
 	@Override
 	public void cancelling() {
-		//TODO close SERVO !!!
+		commandService.servoAperture(recipeItemFull.getConfig().getValveId(), 0);
 	}
 }

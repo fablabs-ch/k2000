@@ -2,7 +2,7 @@
   <v-list-tile avatar>
     <v-list-tile-action>
       <v-select
-        :items="['ALCOOL', 'MINERAL', 'SIRUP', 'OTHER']"
+        :items="['ALCOHOL', 'MINERAL', 'SIRUP', 'OTHER']"
         v-model="value.type"
         max-height="auto"
         @change="changed"
@@ -23,6 +23,7 @@
     </v-list-tile-content>
     <v-list-tile-action>
       <color-picker v-model="value.color" @input="changed"></color-picker>
+      <v-btn icon @click.native="deleted" v-if="canDelete">X</v-btn>
     </v-list-tile-action>
   </v-list-tile>
 </template>
@@ -32,7 +33,7 @@ import IngredientType from '@/components/IngredientType'
 import ColorPicker from '@/components/ColorPicker'
 
 export default {
-  props: ['value'],
+  props: ['value', 'canDelete'],
   data () {
     return {
     }
@@ -40,6 +41,9 @@ export default {
   methods: {
     changed () {
       this.$emit('change', this.value)
+    },
+    deleted () {
+      this.$emit('delete', this.value)
     }
   },
   components: {

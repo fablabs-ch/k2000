@@ -58,13 +58,14 @@ public class SerialService {
 		this.weightSubject.onNext(status.getPayloadWeightGr());
 		this.distanceFromHomeInMm.onNext(status.getCarrierDistMm());
 
+		// TOTO lock arround this
 		Iterator<SseEmitter> iterator = emitters.iterator();
 		while (iterator.hasNext()) {
 			SseEmitter emitter = iterator.next();
 			try {
 				emitter.send(status);
-			} catch (IOException e) {
-				LOG.error("Unable to emit SSE", e);
+			} catch (Exception e) {
+				LOG.warn("Unable to emit SSE {}", e.getMessage());
 				iterator.remove();
 			}
 		}
