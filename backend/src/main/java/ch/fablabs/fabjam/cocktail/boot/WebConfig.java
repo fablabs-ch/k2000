@@ -31,6 +31,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 				HttpServletResponse response = (HttpServletResponse) res;
 				response.setHeader("Access-Control-Allow-Origin", "*");
 				response.setHeader("Access-Control-Allow-Methods", "POST, PUT, DELETE, GET, OPTIONS");
+				filterChain.doFilter(req, res);
 			}
 
 			@Override

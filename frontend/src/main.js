@@ -13,7 +13,7 @@ import router from './router'
 Vue.use(Vuetify)
 
 Vue.use(VueResource)
-Vue.url.options.root = 'http://10.10.0.99:8080/'
+// Vue.url.options.root = 'http://10.10.0.99:8080/'
 
 Vue.config.productionTip = false
 

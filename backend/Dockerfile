@@ -3,6 +3,8 @@ FROM frolvlad/alpine-oraclejdk8:slim
 EXPOSE 8080
 EXPOSE 8081
 
+ADD libs /root/.jssc/
+
 ADD target/*.jar app.jar
 RUN sh -c 'touch /app.jar'
 ENV JAVA_OPTS=""
