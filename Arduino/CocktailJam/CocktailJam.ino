@@ -68,7 +68,7 @@ int currentPosition = 0;
 int steps_to_do = 0;
 int endstop = 0;
 int servo_pins[NBSERVOS] = { 7, 8, 10, 11, 12, 13}; // Define servo pins in an array
-float CALIBRATION_FACTOR = -100000;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
+float CALIBRATION_FACTOR = 1980;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
 int targetWeight = 0;                                    // Weight initialization
 int currentWeight = 0;
 int infill_purcentage = 0;
@@ -240,4 +240,5 @@ void loop()
 {
     cocktailSerial.run();
     printStatus();
+    
 }
