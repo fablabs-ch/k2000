@@ -1,0 +1,23 @@
+
+logLevel = "INFO"
+defaultEntryPoints = ["http"]
+
+[web]
+address = ":8082"
+ReadOnly = true
+
+[file]
+watch = true
+filename = "/etc/traefik/rules.toml"
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "docker.local"
+watch = true
+exposedbydefault = false
+
+
+[entryPoints]
+
+  [entryPoints.http]
+  address = ":80"

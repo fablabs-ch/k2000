@@ -1,0 +1,40 @@
+version: '3.0'
+services:
+  proxy:
+    image: traefik
+    container_name: baromatic-proxy
+    ports:
+      - "80:80"
+      - "8082:8082"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/etc/traefik/traefik.toml
+  backend:
+    image: gaetancollaud/bar-o-matic-backend
+    container_name: baromatic-backend
+    build: ./backend
+    #links:
+    #  - mongodb:mongodb
+    #TODO add devices
+    labels:
+      - "traefik.frontend.rule=PathPrefix:/api"
+      - "traefik.enable=true"
+      - "traefik.port=8080"
+      - "traefik.frontend.priority=10"
+  frontend:
+    image: gaetancollaud/bar-o-matic-frontend
+    container_name: baromatic-frontend
+    build: ./frontend
+    labels:
+      - "traefik.frontend.rule=PathPrefix:/"
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.frontend.priority=5"
+  mongodb:
+    image: mongo
+    container_name: cocktail-mongo
+    user: root
+    ports:
+      - 27017:27017
+    volumes:
+      - "./data/mongo:/data/db"

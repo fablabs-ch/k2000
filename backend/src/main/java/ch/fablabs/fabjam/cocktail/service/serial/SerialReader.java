@@ -46,7 +46,7 @@ public class SerialReader implements SerialPortEventListener {
 				String line = buffer.substring(0, newLine).replace("\r", "");
 				buffer.delete(0, newLine + 1);
 				LOG.trace("Read: {}", line);
-				if (jmsTemplate != null) {
+				if (jmsTemplate != null && line != null && line.length() > 0) {
 					jmsTemplate.convertAndSend(JmsTopic.SERIAL_INPUT, line);
 				}
 			}

@@ -1,8 +1,6 @@
 package ch.fablabs.fabjam.cocktail.service.recipe.actions;
 
-import ch.fablabs.fabjam.cocktail.data.entities.Ingredient;
 import ch.fablabs.fabjam.cocktail.data.recipe.RecipeItemFull;
-import ch.fablabs.fabjam.cocktail.data.serial.SerialStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +11,22 @@ public class FillAction extends AbstractAction {
 	private final RecipeItemFull recipeItemFull;
 
 	@Override
+	protected void initialRun() {
+		commandService.fill(recipeItemFull.getConfig().getValveDistanceMm(), recipeItemFull.getConfig().getValveId(), recipeItemFull.getMl());
+	}
+
+	@Override
+	public long getTimeoutMs() {
+		return 15000;
+	}
+
+	@Override
 	public void run() {
-		setFinished(true);
+		setFinished(endOfCommandReceived("f"));
+	}
+
+	@Override
+	public void cancelling() {
+		commandService.servoAperture(recipeItemFull.getConfig().getValveId(), 0);
 	}
 }
