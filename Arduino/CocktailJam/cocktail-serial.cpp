@@ -79,7 +79,7 @@ void CocktailSerial::anaylseLine(String &line)
         case 'm':
             called = this->call(this->moveFunc, arg1);
             break;
-        case 's':
+        case 'a':
             called = this->call(this->servoFunc, arg1, arg2);
             break;
         }

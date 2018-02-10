@@ -61,7 +61,15 @@ public class SerialConnection implements Runnable {
 			LOG.debug("Port detected:");
 			Arrays.stream(portNames).forEach(p -> LOG.debug("\t{}", p));
 
-			SerialPort serialPort = new SerialPort(port);
+			SerialPort serialPort;
+			if (portNames.length == 1) {
+				LOG.info("Only one serial port found, using {}", portNames[0]);
+				serialPort = new SerialPort(portNames[0]);
+			} else {
+				LOG.info("Using port from configuration: {}", port);
+				serialPort = new SerialPort(port);
+			}
+
 			try {
 				serialPort.openPort();
 

@@ -2,20 +2,28 @@ package ch.fablabs.fabjam.cocktail.service.serial;
 
 import ch.fablabs.fabjam.cocktail.data.serial.SerialStatus;
 import ch.fablabs.fabjam.cocktail.data.type.JmsTopic;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import rx.subjects.BehaviorSubject;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+@Slf4j
 @Service
 public class SerialService {
-
-	@Autowired
-	private SerialConnectionStarter serialConnectionStarter;
 
 	private BehaviorSubject<Integer> weightSubject;
 	private BehaviorSubject<Integer> distanceFromHomeInMm;
 	private BehaviorSubject<SerialStatus> serialStatus;
+
+	private final List<SseEmitter> emitters = Collections.synchronizedList(new LinkedList<>());
 
 	public SerialService() {
 		this.weightSubject = BehaviorSubject.create(-1);
@@ -40,5 +48,22 @@ public class SerialService {
 		this.serialStatus.onNext(status);
 		this.weightSubject.onNext(status.getPayloadWeightGr());
 		this.distanceFromHomeInMm.onNext(status.getCarrierDistMm());
+
+		Iterator<SseEmitter> iterator = emitters.iterator();
+		while (iterator.hasNext()) {
+			SseEmitter emitter = iterator.next();
+			try {
+				emitter.send(status);
+			} catch (IOException e) {
+				LOG.error("Unable to emit SSE", e);
+				iterator.remove();
+			}
+		}
+	}
+
+	public SseEmitter getStatusSSE() {
+		SseEmitter emmitter = new SseEmitter();
+		emitters.add(emmitter);
+		return emmitter;
 	}
 }
