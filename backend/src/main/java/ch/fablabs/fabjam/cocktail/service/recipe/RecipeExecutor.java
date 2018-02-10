@@ -1,6 +1,7 @@
 package ch.fablabs.fabjam.cocktail.service.recipe;
 
 import ch.fablabs.fabjam.cocktail.data.recipe.RecipeItemFull;
+import ch.fablabs.fabjam.cocktail.service.CommandService;
 import ch.fablabs.fabjam.cocktail.service.recipe.actions.AbstractAction;
 import ch.fablabs.fabjam.cocktail.service.recipe.actions.FillAction;
 import ch.fablabs.fabjam.cocktail.service.recipe.actions.HomeAction;
@@ -29,6 +30,9 @@ public class RecipeExecutor implements Runnable {
 	@Autowired
 	private SerialService serialService;
 
+	@Autowired
+	private CommandService commandService;
+
 	@Override
 	public void run() {
 		long totalStart = System.currentTimeMillis();
@@ -43,6 +47,8 @@ public class RecipeExecutor implements Runnable {
 				LOG.debug("Start action {}", action);
 
 				action.setSerialService(serialService);
+				action.setCommandService(commandService);
+
 				int iter = 0;
 				boolean timeout;
 

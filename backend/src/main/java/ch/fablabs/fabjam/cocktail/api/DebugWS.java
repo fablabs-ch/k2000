@@ -19,8 +19,13 @@ public class DebugWS {
 	@Autowired
 	private CommandService commandService;
 
+	@RequestMapping(value = "home")
+	public boolean home() {
+		return commandService.home();
+	}
+
 	@RequestMapping(value = "move/{mm}")
-	public boolean setCarrierPost(@PathVariable("mm") int mm) {
+	public boolean move(@PathVariable("mm") int mm) {
 		return commandService.move(mm);
 	}
 

@@ -78,13 +78,13 @@ int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
 //=== CARRIER =================================================================================================================================
 void moveCarrierToHome()
 { // Initialize carrier position
-    Serial.println("Home called");
+    Serial.println("i:home called");
     //stepper.move(50 * MICROSTEPS);
 
     int j = 0;
     int endstop = digitalRead(PIN_HOME);
 
-  stepper.enable();
+    stepper.enable();
     stepper.setRPM(MOTOR_RPM);
     //stepper.startMove(200);
       stepper.startMove(-100000 * MOTOR_STEPS * MICROSTEPS);
@@ -92,25 +92,29 @@ void moveCarrierToHome()
     while (endstop == LOW)
     {
       stepper.nextAction();
-        endstop = digitalRead(PIN_HOME);
-        
+      endstop = digitalRead(PIN_HOME);                                                             //Show glass animation
+      loop();
+
         //stepper.move(MICROSTEPS);
         // While home switch is not activated move stepper back to it.
         //moveCarrierToHome();
     }
     stepper.startBrake();
 
-    while(stepper.getCurrentState() != stepper.STOPPED)
-      stepper.nextAction();
+    while(stepper.getCurrentState() != stepper.STOPPED){
+      stepper.nextAction();                                                             //Show glass animation
+      loop();
+    }
 
     stepper.stop();
     stepper.disable();
     currentPosition = 0;
-    Serial.println("OK"); // Send position confirmation
+    Serial.println("i:ok"); // Send position confirmation
 }
 
 void moveCarrierToPosition(int distMm)
 {
+    Serial.println("i:move called");
 
     int targetPosition = distMm;
 
@@ -126,34 +130,40 @@ void moveCarrierToPosition(int distMm)
     steps_to_do = (targetPosition - currentPosition) * STEPS_PER_MM;
 
     stepper.enable();
-    stepper.move(steps_to_do);
+    stepper.startMove(steps_to_do);
+    while(stepper.getCurrentState() != stepper.STOPPED){
+      stepper.nextAction();
+      loop();
+    }
     stepper.disable();
     currentPosition = targetPosition;
     //fill(); // TODO: review why fill? since it is send by server after we send OK
-    Serial.println("OK");
+    Serial.println("i:ok");
     // TODO: review do we not need cocktailSerial.run() ?
 }
 
 //=== WEIGHT & FILL============================================================================================================================
 void tareScale()
 {
-    Serial.println("Tare called");
+    Serial.println("i:tare called");
     scale.tare();         // Reset the scale to zero
-    Serial.println("OK"); // Send tare confirmation
-    cocktailSerial.run();
+    Serial.println("i:ok"); // Send tare confirmation
 }
 
 float getWeight()
 { //Check glass weight and return it
     scale.set_scale(CALIBRATION_FACTOR);
-    Serial.println(scale.get_units(), 5);
-    cocktailSerial.run();
     return scale.get_units();
+}
+
+void servoAperture(int servoId, int apertureInPercent){
+    //TODO convert percentage in degree
+    servo[servoId].write(apertureInPercent);
 }
 
 void fillGlass(int distMm, int nServo, int weightGr)
 { //Open Servo x while weight is not equal target weight including glass animation
-    Serial.print("Fill called, dist=");
+    Serial.print("i:fill called, dist=");
     Serial.print(distMm);
     Serial.print(", servo=");
     Serial.print(nServo);
@@ -164,7 +174,6 @@ void fillGlass(int distMm, int nServo, int weightGr)
     moveCarrierToPosition(distMm);
 
     servo[nServo].write(SERVO_OPEN_DEGR);
-   
 
     targetWeight = weightGr;
 
@@ -175,13 +184,10 @@ void fillGlass(int distMm, int nServo, int weightGr)
         pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
         pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
         pixels_glass.show();                                                              //Show glass animation
-        cocktailSerial.run();
+        loop();
     } while (currentWeight < targetWeight);
 
     servo[nServo].write(SERVO_CLOSE_DEGR);
-
-    
-    cocktailSerial.run();
 }
 
 void closeAllServos()
@@ -214,16 +220,24 @@ void setup()
     closeAllServos();
 //    tareScale();
 
-    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass);
-    Serial.println("Ready");
+    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture);
+    Serial.println("i:ready");
  }
+
+unsigned long lastStatus=0;
+void printStatus(){
+  unsigned long now = millis();
+  if(now-lastStatus>=100){
+    Serial.print("s:");
+    Serial.print(currentPosition);
+    Serial.print(':');
+    Serial.println(getWeight());
+    lastStatus = now;
+  }
+}
 
 void loop()
 {
     cocktailSerial.run();
-    //TODO: where do we not need a delay?
-    //stepper.move(50* MICROSTEPS);
-
-    //delay(200);
-    //getWeight();
+    printStatus();
 }

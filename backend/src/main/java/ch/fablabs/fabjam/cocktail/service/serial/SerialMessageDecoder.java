@@ -28,8 +28,8 @@ public class SerialMessageDecoder {
 	protected void decodeStatus(String raw, String[] parts) {
 		if (parts.length == 3) {
 			try {
-				int dist = Integer.parseInt(parts[1]);
-				int weight = Integer.parseInt(parts[2]);
+				int dist = (int) Double.parseDouble(parts[1]);
+				int weight = (int) Double.parseDouble(parts[2]);
 				SerialStatus status = SerialStatus.builder()
 					.carrierDistMm(dist)
 					.payloadWeightGr(weight)
