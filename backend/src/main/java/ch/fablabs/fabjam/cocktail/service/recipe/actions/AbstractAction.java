@@ -40,7 +40,7 @@ abstract public class AbstractAction {
 	abstract public void run();
 
 	public long getTimeoutMs() {
-		return 5000;
+		return 10000;
 	}
 
 	protected boolean endOfCommandReceived(String command) {

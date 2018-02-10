@@ -95,8 +95,8 @@ public class RecipeExecutor implements Runnable {
 		actions.add(new TareAction());
 		actions.add(new HomeAction());
 		actions.addAll(items.stream()
-//			.map(item -> new FillAction(item))
-			.map(item -> new MoveAction(item.getConfig().getValveDistanceMm()))
+			.map(item -> new FillAction(item))
+//			.map(item -> new MoveAction(item.getConfig().getValveDistanceMm()))
 			.collect(Collectors.toList()));
 		actions.add(new HomeAction());
 		return actions;
