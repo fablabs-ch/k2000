@@ -28,20 +28,28 @@ new Vue({
     }
   },
   created () {
-    const cocktailsDB = require('../static/cocktail.json')
-    this.cocktails = cocktailsDB.recipes
-    // backup qty to restore after customized version
-    this.cocktails.forEach(c => {
-      c.items.forEach(i => {
-        i.mlOriginal = i.ml
-        i.disabled = false
-        i.custom = false
+    this.$http.get('api/recipies').then(response => {
+      this.cocktails = response.data
+      // backup qty to restore after customized version
+      this.cocktails.forEach(c => {
+        c.items.forEach(i => {
+          i.mlOriginal = i.ml
+          i.disabled = false
+          i.custom = false
+        })
       })
     })
-    this.ingredients = cocktailsDB.ingredients.reduce((ingredients, i) => {
-      ingredients[i.id] = i
-      return ingredients
-    }, {})
+    /*
+    const cocktailsDB = require('../static/cocktail.json')
+    this.cocktails = cocktailsDB.recipes
+    */
+    this.$http.get('api/ingredients').then(response => {
+      this.ingredients = response.data.reduce((ingredients, i) => {
+        ingredients[i.id] = i
+        return ingredients
+      }, {})
+    })
+    // cocktailsDB.ingredients.
   },
   router,
   template: '<App/>',

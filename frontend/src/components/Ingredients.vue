@@ -22,7 +22,7 @@
         </v-card>
         <v-card>
           <v-list two-line>
-            <ingredient-list-item :value="ingrident" v-for="(ingrident, id) in $root.ingredients" :key="ingrident.id" @change="save"></ingredient-list-item>
+            <ingredient-list-item :value="ingrident" v-for="(ingrident, id) in $root.ingredients" :key="id" @change="save"></ingredient-list-item>
           </v-list>
        </v-card>
       </v-flex>
