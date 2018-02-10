@@ -61,7 +61,7 @@
         {
             "id": 1,
             "name": "Rhum blanc",
-            "type": "ALCOOL",
+            "type": "ALCOHOL",
             "manual": false,
             "color": "#ffc673"
         },

@@ -1,6 +1,6 @@
 <template>
     <div class="ingredient-type">
-        <div v-if="type === 'ALCOOL'">
+        <div v-if="type === 'ALCOHOL'">
           <img src="../assets/rum.svg">
           <span v-if="label">Alcool</span>
         </div>

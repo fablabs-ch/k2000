@@ -2,7 +2,7 @@
   <v-list-tile avatar>
     <v-list-tile-action>
       <v-select
-        :items="['ALCOOL', 'MINERAL', 'SIRUP', 'OTHER']"
+        :items="['ALCOHOL', 'MINERAL', 'SIRUP', 'OTHER']"
         v-model="value.type"
         max-height="auto"
         @change="changed"
