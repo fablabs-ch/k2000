@@ -1,12 +1,13 @@
 <template>
 
-  <v-app id="inspire">
+  <v-app>
     <v-navigation-drawer
-      clipped
-      temporary
       v-model="drawer"
       enable-resize-watcher
       app
+      fixed
+      clipped
+      temporary
     >
       <v-list two-line>
         <router-link :to="{name: 'cocktails'}" tag="v-list-tile" active-class="active" exact>
@@ -39,11 +40,9 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Bar-Omatic</v-toolbar-title>
     </v-toolbar>
-    <main>
-      <v-content>
+    <v-content>
         <router-view></router-view>
-      </v-content>
-    </main>
+    </v-content>
   </v-app>
 </template>
 
@@ -80,15 +79,6 @@ body {
      font-family: 'Montserrat';
      src: url('/static/fonts/Montserrat-Bold.otf');
      font-weight: bold;
- }
-
- #view {
-     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
-     position: absolute;
-     top: 50px;
-     bottom: 0px;
-     width: 100%;
-     overflow: auto;
  }
 
 </style>
