@@ -58,7 +58,7 @@ export default {
 <style>
 
 
-body {
+body .application {
   font-family: 'Architects Daughter', cursive;
   font-size: 16pt;
 }
