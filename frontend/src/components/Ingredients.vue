@@ -4,7 +4,7 @@
       <v-flex md6 offset-md3>
       <h3><img src="../assets/picnic-basket-full-of-raw-vegetables.svg" alt="ingredients"> Ingredients</h3>
 
-        <v-card id="addNewIngridient">
+        <v-card>
           <v-toolbar dark color="primary">
             <v-toolbar-title class="white--text">Add New Ingridient</v-toolbar-title>
           </v-toolbar>
@@ -50,7 +50,7 @@ export default {
     add () {
       this.$http.post('ingredients', this.newIngredient).then(reponse => {
         const savedIngredient = reponse.data
-        this.$root.ingredients[savedIngredient.id] = savedIngredient
+        this.$set(this.$root.ingredients, savedIngredient.id, savedIngredient)
         this.newIngredient = this.createNewIngredient()
       })
     },
