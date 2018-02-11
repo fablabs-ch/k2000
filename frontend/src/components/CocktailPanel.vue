@@ -3,10 +3,16 @@
         <v-card-title primary-title :style="{'background': color}">
           <v-layout column>
               <v-layout row class="headline">
-                <v-flex>
-                  {{cocktail.name}}
-                  <img class="icon" v-if="cocktail.shakeYourBody" src="../assets/shaker.svg" alt="shaker">
+                <v-flex flex>
+                  <v-text-field v-if="mode === EDIT" hide-details v-model="cocktail.name"></v-text-field>
+                  <span v-else>{{cocktail.name}}</span>
                 </v-flex>
+                <div>
+                  <v-layout row>
+                    <img class="icon" v-if="cocktail.shakeYourBody" src="../assets/shaker.svg" alt="shaker">
+                    <v-checkbox hide-details v-if="mode === EDIT" v-model="cocktail.shakeYourBody"></v-checkbox>
+                  </v-layout>
+                </div>
                 <v-btn flat icon v-if="mode === ORDER" @click.native="mode = EDIT"><v-icon>mode_edit</v-icon></v-btn>
               </v-layout>
               <v-list class="ingredients">
@@ -18,17 +24,37 @@
                 </v-list-tile>
                 <v-list-tile v-for="ing in cocktail.items" :key="ing.ingredientId" :class="{disabled: ing.disabled}">
                   <v-layout row  class="ingredient">
-                    <v-text-field hide-details v-if="mode !== ORDER" :disabled="ing.disabled" class="qty-edit" type="number" :value="ing.ml | toUnit" @input="setIngQty(ing, $event)"></v-text-field>
+                    <v-text-field hide-details v-if="mode !== ORDER" :disabled="ing.disabled" class="qty-edit" type="number" min="0" :value="ing.ml | toUnit" @input="setIngQty(ing, $event)"></v-text-field>
                     <span v-if="mode === ORDER" class="qty">{{ing.ml | toUnit}}</span>
                     &nbsp;cl
-                    <ingredient-type class="type" style="display: inline-block;" :type="ingredients[ing.ingredientId].type" :style="{'background-color': ingredients[ing.ingredientId].color}"></ingredient-type>
-                    <v-flex flex class="i-name">{{ingredients[ing.ingredientId].name}}</v-flex>
+                    <ingredient-type class="type" style="display: inline-block;" :type="ingredientsLookup[ing.ingredientId].type" :style="{'background-color': ingredientsLookup[ing.ingredientId].color}"></ingredient-type>
+                    <v-flex flex class="i-name">{{ingredientsLookup[ing.ingredientId].name}}</v-flex>
                     <v-btn flat icon v-if="mode === CUSTOMIZE && !ing.disabled" @click.native="toggle(ing)"><v-icon>remove_circle_outline</v-icon></v-btn>
                     <v-btn flat icon v-if="mode === CUSTOMIZE && ing.disabled" @click.native="toggle(ing)"><v-icon>add_circle_outline</v-icon></v-btn>
                     <v-btn flat icon v-if="mode === EDIT" @click.native="removeIngredient(ing)"><v-icon>delete</v-icon></v-btn>
                   </v-layout>
                 </v-list-tile>
-                ADD / custom
+                <v-list-tile v-if="mode === CUSTOMIZE || mode === EDIT">
+                  <v-layout row  class="ingredient">
+                    <v-text-field hide-details class="qty-edit" type="number" min="0" :value="newIngredient.ml | toUnit" @input="setIngQty(newIngredient, $event)"></v-text-field>
+                    &nbsp;cl
+                    <ingredient-type v-if="newIngredient && newIngredient.ingredientId" class="type" style="display: inline-block;" :type="ingredientsLookup[newIngredient.ingredientId].type" :style="{'background-color': ingredientsLookup[newIngredient.ingredientId].color}"></ingredient-type>
+                    <v-flex flex class="i-name">
+                              <v-select
+              :items="ingredients"
+              v-model="newIngredient.ingredientId"
+              item-value="id"
+              item-text="name"
+              label="Ingredient"
+              autocomplete
+              single-line
+              bottom
+              required
+            ></v-select>
+                    </v-flex>
+                    <v-btn flat icon @click.native="addIngredient"><v-icon>add</v-icon></v-btn>
+                  </v-layout>
+                </v-list-tile>
               </v-list>
           </v-layout>
         </v-card-title>
@@ -36,10 +62,11 @@
         <v-btn v-if="mode === ORDER" flat outline @click="mode = CUSTOMIZE">Customize</v-btn>
         <v-btn v-if="mode === CUSTOMIZE" flat outline @click="reset">Reset</v-btn>
         <v-btn v-if="mode === EDIT" flat outline  @click="duplicate">Duplicate</v-btn>
+        <v-btn v-if="mode === EDIT" flat color="error" outline  @click="deleteItem">Delete</v-btn>
 
         <v-spacer></v-spacer>
         <v-btn v-if="mode !== EDIT" color="primary" @click="order">Order</v-btn>
-        <v-btn v-if="mode === EDIT" flat outline  @click="reload">Cancel</v-btn>
+        <v-btn v-if="mode === EDIT" flat outline  @click="cancel">Cancel</v-btn>
         <v-btn v-if="mode === EDIT" color="primary" @click="save">Save</v-btn>
         </v-card-actions>
     </v-card>
@@ -58,10 +85,20 @@ export default {
       CUSTOMIZE: 'CUSTOMIZE',
       EDIT: 'EDIT',
       mode: 'ORDER',
-      ingredients: this.$root.ingredients
+      ingredientsLookup: this.$root.ingredients,
+      newIngredient: this.createNewIngrident()
     }
   },
   methods: {
+    createNewIngrident () {
+      return {
+        ingredientId: null,
+        ml: 0,
+        mlOriginal: 0,
+        disabled: false,
+        custom: true
+      }
+    },
     setTotal (val) {
       this.total = parseInt(val) * 10
     },
@@ -70,30 +107,61 @@ export default {
       order.items = this.cocktail.items.map(i => Object.assign({}, i))
       this.$emit('order', order)
     },
+    deleteItem () {
+      this.$http.delete(`recipies/${this.cocktail.id}`).then(response => {
+        this.$root.cocktails.splice(this.$root.cocktails.indexOf(this.cocktail), 1)
+      }, response => {
+
+      })
+    },
     save () {
-      console.log('TODO send to server')
+      this.$http.put(`recipies/${this.cocktail.id}`, this.cocktail).then(response => {
+        // TODO update reset params from response.data
+        this.$root.notify('saved')
+      }, response => {
+
+      })
       this.mode = this.ORDER
     },
     duplicate () {
-      console.log('TODOremove id and save as new?')
+      const duplicate = Object.assign({}, this.cocktail)
+      duplicate.name += ' (copy)'
+      delete duplicate.id
+      this.$http.post(`recipies`, duplicate).then(response => {
+        // TODO update reset params
+        this.$root.cocktails.splice(this.$root.cocktails.indexOf(this.cocktail) + 1, 0, response.data)
+      }, response => {
+
+      })
       this.mode = this.ORDER
     },
     cancel () {
-      console.log('TODO handle cancel of edits reload?')
+      this.$http.get(`recipies/${this.cocktail.id}`).then(response => {
+        // TODO update reset params
+        Object.assign(this.cocktail, response.data)
+      }, response => {
+
+      })
       this.mode = this.ORDER
     },
     reset () {
-      this.cocktail.items.filter(i => !i.custom).forEach(i => {
+      this.cocktail.items = this.cocktail.itemsOriginal.map(i => {
         i.ml = i.mlOriginal
         i.disabled = false
         i.custom = false
+        return i
       })
+      this.newIngredient = this.createNewIngrident()
       this.mode = this.ORDER
     },
     toggle (i) {
       i.disabled = !i.disabled
       // hack to trigger list refresh for now...
       Vue.set(this.cocktail, 'items', this.cocktail.items.slice(0))
+    },
+    addIngredient () {
+      this.cocktail.items.push(this.newIngredient)
+      this.newIngredient = this.createNewIngrident()
     },
     removeIngredient (ing) {
       this.cocktail.items.splice(this.cocktail.items.indexOf(ing), 1)
@@ -104,6 +172,9 @@ export default {
     }
   },
   computed: {
+    ingredients () {
+      return Object.values(this.$root.ingredients)
+    },
     total: {
       get () {
         return this.cocktail.items.filter(i => !i.disabled).reduce((t, i) => {
@@ -120,8 +191,8 @@ export default {
     color () {
       // calculate % mix or gradiant based on shake
       const calculation = this.cocktail.items.filter(i => !i.disabled).reduce((list, i) => {
-        list.colors.push(new ColorMixer.Color(this.ingredients[i.ingredientId].color))
-        list.hexColors.push(this.ingredients[i.ingredientId].color)
+        list.colors.push(new ColorMixer.Color(this.ingredientsLookup[i.ingredientId].color))
+        list.hexColors.push(this.ingredientsLookup[i.ingredientId].color)
         list.mls.push(i.ml)
         list.total += i.ml
         return list
@@ -206,5 +277,6 @@ export default {
 
   .icon {
     width: 40px;
+    height: 40px;
   }
 </style>

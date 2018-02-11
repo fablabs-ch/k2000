@@ -40,10 +40,11 @@ new Vue({
         this.cocktails = response.data || []
         // backup qty to restore after customized version
         this.cocktails.forEach(c => {
-          c.items.forEach(i => {
+          c.itemsOriginal = c.items.map(i => {
             i.mlOriginal = i.ml
             i.disabled = false
             i.custom = false
+            return i
           })
         })
       })

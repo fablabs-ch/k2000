@@ -6,7 +6,6 @@
                 :vertical=true
                 v-model="$root.snackbar">
       {{ $root.snacktext }}
-      <v-btn flat color="pink" @click.native="$root.snackbar = false">Close</v-btn>
     </v-snackbar>
     <v-navigation-drawer
       v-model="drawer"
