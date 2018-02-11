@@ -30,8 +30,7 @@
       </v-stepper-content>
       <v-stepper-content step="3">
           Bla blab,
-          if Shaker
-          <v-layout justify-center>
+          <v-layout justify-center v-if="order && order.shakeYourBody">
             <img class="shake" src="../assets/shaker.svg" alt="shaker">
           </v-layout>
         <v-layout>
@@ -59,8 +58,11 @@ export default {
       this.$emit('close')
     },
     stop () {
-      console.log('TODO: send stop to API')
-      this.reset()
+      this.$http.get('command/stop').then(response => {
+        this.reset()
+      }, response => {
+        this.$root.notify('Error when trying to stop')
+      })
     }
   },
   components: {
