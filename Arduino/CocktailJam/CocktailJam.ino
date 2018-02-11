@@ -1,3 +1,4 @@
+
 /*
  * This Arduino code manages glass moving carrier, led animation and glass infill.
  * Raspberry Pi sends commands through serial and Arduino do the rest.
@@ -23,7 +24,7 @@
 
 // Homing
 //#define PIN_HOME 53      // Switch pin for homing (endstop)
-#define PIN_HOME 9      // Switch pin for homing (endstop)
+#define PIN_HOME 13      // Switch pin for homing (endstop)
 #define MAXPOSITION 1000 // Maximum carrier travel in millimeter. *Depending on machine size
 
 // Stepper
@@ -38,9 +39,9 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY)
 #define MOTOR_ACCEL_SPEED 500 // Set acceleration speed
 #define MOTOR_DECEL_SPEED 500 // Set deceleration speed
 
-#define PIN_DIR 3 // Pin on Pololu 4988
-#define PIN_STEP 2
-#define PIN_ENABLE 4
+#define PIN_DIR A2 // Pin on Pololu 4988
+#define PIN_STEP A1
+#define PIN_ENABLE A3
 
 // Servo
 #define NBSERVOS 6
@@ -54,8 +55,12 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY)
 #define NBPIXELS_FRAME 40 // LED Quantity on neopixel strip
 
 // LoadCell
-#define LOAD_CELL_DOUT 5
-#define LOAD_CELL_CLK 6
+#define LOAD_CELL_DOUT A4
+#define LOAD_CELL_CLK A5
+
+//Pump
+#define PIN_PUMP 2
+
 
 BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP, PIN_ENABLE);
 Servo servo[NBSERVOS];                      //Servo object in an array
@@ -67,7 +72,7 @@ CocktailSerial cocktailSerial(&Serial);
 int currentPosition = 0;
 int steps_to_do = 0;
 int endstop = 0;
-int servo_pins[NBSERVOS] = { 7, 8, 10, 11, 12, 13}; // Define servo pins in an array
+int servo_pins[NBSERVOS] = { 3, 4, 5, 6, 7, 8}; // Define servo pins in an array
 float CALIBRATION_FACTOR = 1980;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
 int targetWeight = 0;                                    // Weight initialization
 int currentWeight = 0;
@@ -205,6 +210,9 @@ void setup()
     pinMode(PIN_HOME, INPUT);
     digitalWrite(PIN_HOME, HIGH); // Activate pullup home pin
 
+    pinMode(PIN_PUMP, OUTPUT);
+    digitalWrite(PIN_PUMP, LOW);
+
     stepper.begin(RPM, MICROSTEPS);
     stepper.disable();
     stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL_SPEED, MOTOR_DECEL_SPEED);
@@ -240,5 +248,6 @@ void loop()
 {
     cocktailSerial.run();
     printStatus();
+    digitalWrite(PIN_PUMP, HIGH);
     
 }
