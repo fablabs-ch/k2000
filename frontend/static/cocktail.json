@@ -1,83 +1,97 @@
- {
-    "recipes": [
+{
+  "recipies": [
+    {
+      "name": "Pina Colada",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": true,
+      "items": [
         {
-            "name": "Pina Colada",
-            "description": "",
-            "imageUrl": "",
-            "shakeYourBody": true,
-            "items": [
-                {
-                    "ingredientId": 1,
-                    "ml": 40
-                },
-                {
-                    "ingredientId": 2,
-                    "ml": 20
-                },
-                {
-                    "ingredientId": 3,
-                    "ml": 30
-                }
-            ]
+          "ingredientId": 1,
+          "ml": 40
         },
         {
-            "name": "Pina2 Colada2",
-            "description": "",
-            "imageUrl": "",
-            "shakeYourBody": true,
-            "items": [
-                {
-                    "ingredientId": 1,
-                    "ml": 40
-                },
-                {
-                    "ingredientId": 2,
-                    "ml": 40
-                }
-            ]
+          "ingredientId": 2,
+          "ml": 20
         },
         {
-            "name": "asdaads Colada",
-            "description": "",
-            "imageUrl": "",
-            "shakeYourBody": false,
-            "items": [
-                {
-                    "ingredientId": 1,
-                    "ml": 40
-                },
-                {
-                    "ingredientId": 2,
-                    "ml": 20
-                },
-                {
-                    "ingredientId": 3,
-                    "ml": 10
-                }
-            ]
+          "ingredientId": 3,
+          "ml": 30
         }
-    ],
-    "ingredients": [
+      ]
+    },
+    {
+      "name": "Pina2 Colada2",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": true,
+      "items": [
         {
-            "id": 1,
-            "name": "Rhum blanc",
-            "type": "ALCOHOL",
-            "manual": false,
-            "color": "#ffc673"
+          "ingredientId": 1,
+          "ml": 40
         },
         {
-            "id": 2,
-            "name": "Grenadine",
-            "type": "SIRUP",
-            "manual": false,
-            "color": "#ff5145"
-        },
-        {
-            "id": 3,
-            "name": "Eau",
-            "type": "MINERAL",
-            "manual": false,
-            "color": "#d9e3e0"
+          "ingredientId": 2,
+          "ml": 40
         }
-    ]
- }
+      ]
+    },
+    {
+      "name": "asdaads Colada",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": false,
+      "items": [
+        {
+          "ingredientId": 1,
+          "ml": 40
+        },
+        {
+          "ingredientId": 2,
+          "ml": 20
+        },
+        {
+          "ingredientId": 3,
+          "ml": 10
+        }
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "id": 1,
+      "name": "Rhum blanc",
+      "type": "ALCOHOL",
+      "manual": false,
+      "color": "#ffc673"
+    },
+    {
+      "id": 2,
+      "name": "Grenadine",
+      "type": "SIRUP",
+      "manual": false,
+      "color": "#ff5145"
+    },
+    {
+      "id": 3,
+      "name": "Eau",
+      "type": "MINERAL",
+      "manual": false,
+      "color": "#d9e3e0"
+    }
+  ],
+  "config": [
+    {
+      "id": 1,
+      "ingredientId": 1,
+      "valveDistanceMm": 100,
+      "valveId": 1
+    },
+    {
+      "id": 2,
+      "ingredientId": 2,
+      "valveDistanceMm": 300,
+      "valveId": 2
+    }
+  ]
+}

@@ -12,8 +12,8 @@ export default {
   },
   created () {
     const evtSource = new EventSource(`${this.$url.options.root}sse/status`)
-    evtSource.onmessage = (data) => {
-      this.data = data
+    evtSource.onmessage = (e) => {
+      this.data = JSON.parse(e.data)
     }
     evtSource.onerror = (e) => {
       console.log('EventSource failed.')

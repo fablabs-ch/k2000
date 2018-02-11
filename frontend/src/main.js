@@ -30,29 +30,24 @@ new Vue({
     }
   },
   created () {
-    this.$http.get('recipies').then(response => {
-      this.cocktails = response.data || []
-      // backup qty to restore after customized version
-      this.cocktails.forEach(c => {
-        c.items.forEach(i => {
-          i.mlOriginal = i.ml
-          i.disabled = false
-          i.custom = false
-        })
-      })
-    })
-    /*
-    const cocktailsDB = require('../static/cocktail.json')
-    this.cocktails = cocktailsDB.recipes
-    */
     this.$http.get('ingredients').then(response => {
       const serverIngredients = response.data || []
       this.ingredients = serverIngredients.reduce((ingredients, i) => {
         ingredients[i.id] = i
         return ingredients
       }, {})
+      this.$http.get('recipies').then(response => {
+        this.cocktails = response.data || []
+        // backup qty to restore after customized version
+        this.cocktails.forEach(c => {
+          c.items.forEach(i => {
+            i.mlOriginal = i.ml
+            i.disabled = false
+            i.custom = false
+          })
+        })
+      })
     })
-    // cocktailsDB.ingredients.
   },
   methods: {
     notify (message) {
