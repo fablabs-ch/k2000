@@ -86,6 +86,7 @@ export default {
       this.cocktail.items.filter(i => !i.custom).forEach(i => {
         i.ml = i.mlOriginal
         i.disabled = false
+        i.custom = false
       })
       this.mode = this.ORDER
     },
@@ -96,6 +97,10 @@ export default {
     },
     removeIngredient (ing) {
       this.cocktail.items.splice(this.cocktail.items.indexOf(ing), 1)
+    },
+    setIngQty (ing, e) {
+      ing.ml = parseFloat(e) * 10
+      ing.custom = ing.disabled || ing.ml !== ing.mlOriginal
     }
   },
   computed: {
