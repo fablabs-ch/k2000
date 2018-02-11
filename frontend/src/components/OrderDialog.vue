@@ -15,12 +15,12 @@
         <v-layout row>
           <v-spacer></v-spacer>
           <v-btn flat @click.native="reset">Cancel</v-btn>
-          <v-btn color="primary" @click.native="step = 2">Glass OK</v-btn>
+          <v-btn color="primary" @click.native="executeOrder">Glass OK</v-btn>
         </v-layout>
       </v-stepper-content>
       <v-stepper-content step="2">
         <v-layout justify-center>
-          <cocktail-loader message="Please wait while we fill up your glass..." :run="true"></cocktail-loader>
+          <cocktail-loader message="Please wait while we fill up your glass... Stream status from backend?" :run="true"></cocktail-loader>
         </v-layout>
         <v-layout>
           <v-btn color="error" @click.native="stop">STOP</v-btn>
@@ -62,6 +62,13 @@ export default {
         this.reset()
       }, response => {
         this.$root.notify('Error when trying to stop')
+      })
+    },
+    executeOrder () {
+      this.$http.post('command/order', this.order.items.filter(i => !i.disabled)).then(response => {
+        this.step = 2
+      }, response => {
+        this.$root.notify('Error when trying to order. Is machine free? Currently backend does not support queue.')
       })
     }
   },
