@@ -75,7 +75,7 @@
 <script>
 import Vue from 'vue'
 import IngredientType from '@/components/IngredientType'
-import ColorMixer from '../../node_modules/colormix/src/index'
+import ColorMixer from '@/vendors/colormix'
 
 export default {
   props: ['cocktail'],
