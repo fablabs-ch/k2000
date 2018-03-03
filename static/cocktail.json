@@ -1,0 +1,172 @@
+{
+  "recipies": [
+    {
+      "id": 1,
+      "name": "Pina Colada",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": true,
+      "items": [
+        {
+          "ingredientId": 1,
+          "ml": 40,
+          "mlOriginal": 40,
+          "disabled": false,
+          "custom": false
+        },
+        {
+          "ingredientId": 2,
+          "ml": 20,
+          "mlOriginal": 20,
+          "disabled": false,
+          "custom": false
+        },
+        {
+          "ingredientId": 3,
+          "ml": 30,
+          "mlOriginal": 30,
+          "disabled": false,
+          "custom": false
+        }
+      ],
+      "itemsOriginal": [
+        {
+          "ingredientId": 1,
+          "ml": 40,
+          "mlOriginal": 40,
+          "disabled": false,
+          "custom": false
+        },
+        {
+          "ingredientId": 2,
+          "ml": 20,
+          "mlOriginal": 20,
+          "disabled": false,
+          "custom": false
+        },
+        {
+          "ingredientId": 3,
+          "ml": 30,
+          "mlOriginal": 30,
+          "disabled": false,
+          "custom": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Pina2 Colada2",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": true,
+      "items": [
+        {
+          "ingredientId": 1,
+          "ml": 40
+        },
+        {
+          "ingredientId": 2,
+          "ml": 40
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "asdaads Colada",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": false,
+      "items": [
+        {
+          "ingredientId": 1,
+          "ml": 40
+        },
+        {
+          "ingredientId": 2,
+          "ml": 20
+        },
+        {
+          "ingredientId": 3,
+          "ml": 10
+        }
+      ]
+    },
+    {
+      "name": "New test",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": true,
+      "items": [
+        {
+          "ingredientId": 1,
+          "ml": 30,
+          "mlOriginal": 30,
+          "disabled": false,
+          "custom": false
+        },
+        {
+          "ingredientId": 3,
+          "ml": 50,
+          "mlOriginal": 0,
+          "disabled": false,
+          "custom": true
+        }
+      ],
+      "id": 4,
+      "itemsOriginal": [
+        {
+          "ingredientId": 1,
+          "ml": 30,
+          "mlOriginal": 30,
+          "disabled": false,
+          "custom": false
+        }
+      ]
+    },
+    {
+      "name": "New Cocktail",
+      "description": "",
+      "imageUrl": "",
+      "shakeYourBody": false,
+      "items": [],
+      "id": 5
+    }
+  ],
+  "ingredients": [
+    {
+      "id": 1,
+      "name": "Rhum blanc",
+      "type": "ALCOHOL",
+      "manual": false,
+      "color": "#ffc673"
+    },
+    {
+      "id": 2,
+      "name": "Grenadine",
+      "type": "SIRUP",
+      "manual": false,
+      "color": "#ff5145"
+    },
+    {
+      "id": 3,
+      "name": "Eau",
+      "type": "MINERAL",
+      "manual": false,
+      "color": "#d9e3e0"
+    }
+  ],
+  "config": [
+    {
+      "id": 1,
+      "ingredientId": 1,
+      "valveDistanceMm": 100,
+      "valveId": 1
+    },
+    {
+      "id": 2,
+      "ingredientId": 2,
+      "valveDistanceMm": 300,
+      "valveId": 2
+    }
+  ]
+}

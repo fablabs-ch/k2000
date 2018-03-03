@@ -1,0 +1,681 @@
+{
+"recipes": [
+{
+"name":"pina colada",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"3",
+"ml":40
+},
+{
+"ingredientId":"4",
+"ml":20
+},
+{
+"ingredientId":"10",
+"ml":120
+},
+{
+"ingredientId":"11",
+"ml":40
+}
+]
+},
+{
+"name":"margarita",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"6",
+"ml":50
+},
+{
+"ingredientId":"8",
+"ml":30
+},
+{
+"ingredientId":"14",
+"ml":20
+}
+]
+},
+{
+"name":"cosmopolitan",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"5",
+"ml":40
+},
+{
+"ingredientId":"8",
+"ml":20
+},
+{
+"ingredientId":"14",
+"ml":10
+},
+{
+"ingredientId":"16",
+"ml":20
+}
+]
+},
+{
+"name":"Blue Lagon",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"5",
+"ml":40
+},
+{
+"ingredientId":"7",
+"ml":30
+},
+{
+"ingredientId":"15",
+"ml":20
+}
+]
+},
+{
+"name":"Tequila Sunrise",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"6",
+"ml":60
+},
+{
+"ingredientId":"13",
+"ml":120
+},
+{
+"ingredientId":"21",
+"ml":20
+}
+]
+},
+{
+"name":"Cuba Libre",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"4",
+"ml":60
+},
+{
+"ingredientId":"14",
+"ml":40
+},
+{
+"ingredientId":"17",
+"ml":150
+}
+]
+},
+{
+"name":"Daiquiri",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"3",
+"ml":40
+},
+{
+"ingredientId":"14",
+"ml":20
+},
+{
+"ingredientId":"22",
+"ml":10
+}
+]
+},
+{
+"name":"Gin Fizz",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"2",
+"ml":60
+},
+{
+"ingredientId":"14",
+"ml":40
+},
+{
+"ingredientId":"18",
+"ml":120
+},
+{
+"ingredientId":"22",
+"ml":20
+}
+]
+},
+{
+"name":"Zombie",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"3",
+"ml":30
+},
+{
+"ingredientId":"4",
+"ml":30
+},
+{
+"ingredientId":"10",
+"ml":60
+},
+{
+"ingredientId":"14",
+"ml":20
+},
+{
+"ingredientId":"21",
+"ml":10
+},
+{
+"ingredientId":"22",
+"ml":20
+}
+]
+},
+{
+"name":"Ti-Punch",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"3",
+"ml":60
+},
+{
+"ingredientId":"22",
+"ml":20
+}
+]
+},
+{
+"name":"Long island Iced Tea",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"2",
+"ml":20
+},
+{
+"ingredientId":"3",
+"ml":20
+},
+{
+"ingredientId":"5",
+"ml":20
+},
+{
+"ingredientId":"6",
+"ml":20
+},
+{
+"ingredientId":"8",
+"ml":20
+},
+{
+"ingredientId":"15",
+"ml":10
+},
+{
+"ingredientId":"17",
+"ml":30
+}
+]
+},
+{
+"name":"Aphrodisiaque",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"2",
+"ml":20
+},
+{
+"ingredientId":"8",
+"ml":20
+}
+]
+},
+{
+"name":"Blue Hawaiian",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"3",
+"ml":40
+},
+{
+"ingredientId":"7",
+"ml":20
+},
+{
+"ingredientId":"10",
+"ml":80
+},
+{
+"ingredientId":"11",
+"ml":40
+}
+]
+},
+{
+"name":"Mai Tai",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"3",
+"ml":30
+},
+{
+"ingredientId":"4",
+"ml":30
+},
+{
+"ingredientId":"8",
+"ml":30
+},
+{
+"ingredientId":"14",
+"ml":30
+},
+{
+"ingredientId":"22",
+"ml":10
+},
+{
+"ingredientId":"23",
+"ml":10
+}
+]
+},
+{
+"name":"Dry Martini",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"2",
+"ml":50
+},
+{
+"ingredientId":"9",
+"ml":10
+}
+]
+},
+{
+"name":"Gin Tonic",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"2",
+"ml":30
+},
+{
+"ingredientId":"19",
+"ml":60
+}
+]
+},
+{
+"name":"Cocaine Liquide",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"5",
+"ml":20
+},
+{
+"ingredientId":"6",
+"ml":20
+},
+{
+"ingredientId":"7",
+"ml":20
+}
+]
+},
+{
+"name":"Planter-s Punch",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"4",
+"ml":60
+},
+{
+"ingredientId":"13",
+"ml":20
+},
+{
+"ingredientId":"15",
+"ml":20
+},
+{
+"ingredientId":"21",
+"ml":10
+}
+]
+},
+{
+"name":"Rainbow Shot the Sheriff",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": true,
+"items": [
+{
+"ingredientId":"5",
+"ml":30
+},
+{
+"ingredientId":"7",
+"ml":20
+},
+{
+"ingredientId":"13",
+"ml":100
+},
+{
+"ingredientId":"21",
+"ml":30
+}
+]
+},
+{
+"name":"kamikaze",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"5",
+"ml":20
+},
+{
+"ingredientId":"8",
+"ml":20
+},
+{
+"ingredientId":"13",
+"ml":20
+}
+]
+},
+{
+"name":"Aquarium",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"3",
+"ml":40
+},
+{
+"ingredientId":"6",
+"ml":40
+},
+{
+"ingredientId":"7",
+"ml":40
+},
+{
+"ingredientId":"9",
+"ml":40
+},
+{
+"ingredientId":"22",
+"ml":40
+}
+]
+},
+{
+"name":"Hurricane",
+"description":"",
+"imageUrl":"",
+"shakeYourBody": false,
+"items": [
+{
+"ingredientId":"3",
+"ml":30
+},
+{
+"ingredientId":"4",
+"ml":30
+},
+{
+"ingredientId":"12",
+"ml":10
+},
+{
+"ingredientId":"14",
+"ml":20
+}
+]
+}
+],
+"ingredients": [
+{
+"id":1,
+"name":"Whisky",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":2,
+"name":"Gin",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":3,
+"name":"Rhum blanc",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":4,
+"name":"Rhum Ambré",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":5,
+"name":"Vodka",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":6,
+"name":"Tequila",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":7,
+"name":"Curaçao bleu",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":8,
+"name":"Cointreau",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":9,
+"name":"Martini",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":10,
+"name":"Ananas",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":11,
+"name":"Lait de Coco",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":12,
+"name":"Passion",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":13,
+"name":"Orange",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":14,
+"name":"Citron Vert",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":15,
+"name":"Citron",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":16,
+"name":"Cranberry",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":17,
+"name":"Coca",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":18,
+"name":"Perrier",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":19,
+"name":"Tonic",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":20,
+"name":"melon",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":21,
+"name":"Grenadine",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":22,
+"name":"canne",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":23,
+"name":"orgeat",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":24,
+"name":"",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+},
+{
+"id":25,
+"name":"Angostura bitters",
+"type": "ALCOHOL",
+"manual": false,
+"color": "#ffffff"
+}
+]
+}
