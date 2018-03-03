@@ -17,7 +17,7 @@ public class FillAction extends AbstractAction {
 
 	@Override
 	public long getTimeoutMs() {
-		return 15000;
+		return 60000;
 	}
 
 	@Override

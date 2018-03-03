@@ -45,7 +45,7 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY)
 
 // Servo
 #define NBSERVOS 6
-#define SERVO_OPEN_DEGR 0    // Servo angle for open state. *set the correct angle to get correct flow
+#define SERVO_OPEN_DEGR 40    // Servo angle for open state. *set the correct angle to get correct flow
 #define SERVO_CLOSE_DEGR 180 // Servo angle for close state. *set the correct angle to close the flow properly
 
 // Ledstrip
