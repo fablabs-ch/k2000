@@ -15,7 +15,8 @@ public class DebugService implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
-		serialService.getDistanceFromHomeInMm().subscribe(v -> LOG.trace("distance: {}mm", v));
-		serialService.getWeightSubject().subscribe(v -> LOG.trace("weight: {}gr", v));
+		if (LOG.isTraceEnabled()) {
+			serialService.getSerialStatus().subscribe(v -> LOG.trace("Status {}", v));
+		}
 	}
 }

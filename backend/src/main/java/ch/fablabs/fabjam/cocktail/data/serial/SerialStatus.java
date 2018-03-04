@@ -13,4 +13,5 @@ public class SerialStatus {
 
 	private int carrierDistMm;
 	private int payloadWeightGr;
+	private int pressureMBar;
 }

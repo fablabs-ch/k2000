@@ -1,6 +1,5 @@
 package ch.fablabs.fabjam.cocktail.service.serial;
 
-import ch.fablabs.fabjam.cocktail.data.type.JmsTopic;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -8,7 +7,6 @@ import jssc.SerialPortException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.core.JmsTemplate;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,7 +17,7 @@ public class SerialReader implements SerialPortEventListener {
 	protected StringBuffer buffer = new StringBuffer();
 
 	@Autowired
-	private JmsTemplate jmsTemplate;
+	private SerialMessageDecoder serialMessageDecoder;
 
 	@Override
 	public void serialEvent(SerialPortEvent event) {
@@ -46,8 +44,8 @@ public class SerialReader implements SerialPortEventListener {
 				String line = buffer.substring(0, newLine).replace("\r", "");
 				buffer.delete(0, newLine + 1);
 				LOG.trace("Read: {}", line);
-				if (jmsTemplate != null && line != null && line.length() > 0) {
-					jmsTemplate.convertAndSend(JmsTopic.SERIAL_INPUT, line);
+				if (line != null && line.length() > 0) {
+					serialMessageDecoder.receiveMessage(line);
 				}
 			}
 		} while (newLine != -1);
