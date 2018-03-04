@@ -19,6 +19,8 @@
 #include <avr/power.h>
 #endif
 #include "cocktail-serial.h";
+#include "pressure.h"
+#include "status.h"
 
 // === MAIN CONFIGURATION =================================================================================================================================
 
@@ -60,14 +62,7 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY)
 
 //Pump
 #define PIN_PUMP 2
-
-
-BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP, PIN_ENABLE);
-Servo servo[NBSERVOS];                      //Servo object in an array
-HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
-Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
-CocktailSerial cocktailSerial(&Serial);
+#define PIN_PRESSURE_SENSOR A0
 
 int currentPosition = 0;
 int steps_to_do = 0;
@@ -79,6 +74,15 @@ int currentWeight = 0;
 int infill_purcentage = 0;
 int pixelGlassToDisplay = 0;
 int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
+
+BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP, PIN_ENABLE);
+Servo servo[NBSERVOS];                      //Servo object in an array
+HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
+Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
+CocktailSerial cocktailSerial(&Serial);
+Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP, 500);
+Status status(&Serial, &currentWeight, &currentPosition, &pressure);
 
 //=== CARRIER =================================================================================================================================
 void moveCarrierToHome()
@@ -155,10 +159,11 @@ void tareScale()
     Serial.println("i:ok"); // Send tare confirmation
 }
 
-float getWeight()
+float computeCurrentWeight()
 { //Check glass weight and return it
     scale.set_scale(CALIBRATION_FACTOR);
-    return scale.get_units();
+    currentWeight = scale.get_units();
+    return currentWeight;
 }
 
 void servoAperture(int servoId, int apertureInPercent){
@@ -184,7 +189,7 @@ void fillGlass(int distMm, int nServo, int weightGr)
 
     do
     {
-        currentWeight = getWeight();
+        currentWeight = computeCurrentWeight();
         //servo[nServo].write(SERVO_OPEN_DEGR);                                             //Fill glass
         pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
         pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
@@ -232,22 +237,19 @@ void setup()
     Serial.println("i:ready");
  }
 
-unsigned long lastStatus=0;
-void printStatus(){
-  unsigned long now = millis();
-  if(now-lastStatus>=100){
-    Serial.print("s:");
-    Serial.print(currentPosition);
-    Serial.print(':');
-    Serial.println(getWeight());
-    lastStatus = now;
-  }
-}
-
+unsigned long lastLoop = 0;
 void loop()
 {
+    unsigned long now = millis();
+    unsigned long dtMs = 0;
+    if (lastLoop < now) {
+        //or else overflow, keep one as delta
+        dtMs = now - lastLoop;
+    }
+    lastLoop = now;
+
     cocktailSerial.run();
-    printStatus();
-    digitalWrite(PIN_PUMP, HIGH);
-    
+    pressure.run(dtMs);
+    status.run(dtMs);
+
 }
