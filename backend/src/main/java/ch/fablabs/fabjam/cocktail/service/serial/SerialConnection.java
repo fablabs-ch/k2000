@@ -58,7 +58,7 @@ public class SerialConnection implements Runnable {
 		if (portNames.length == 0) {
 			LOG.error("No serial port detected");
 		} else {
-			LOG.debug("Port detected:");
+			LOG.debug("Ports detected:");
 			Arrays.stream(portNames).forEach(p -> LOG.debug("\t{}", p));
 
 			SerialPort serialPort;

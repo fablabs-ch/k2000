@@ -27,7 +27,7 @@ public class SerialMessageDecoder {
 	}
 
 	protected void decodeStatus(String raw, String[] parts) {
-		if (parts.length == 3) {
+		if (parts.length == 4) {
 			try {
 				int dist = (int) Double.parseDouble(parts[1]);
 				int weight = (int) Double.parseDouble(parts[2]);
