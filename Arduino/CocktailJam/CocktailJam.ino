@@ -235,7 +235,7 @@ void setup()
 unsigned long lastStatus=0;
 void printStatus(){
   unsigned long now = millis();
-  if(now-lastStatus>=100){
+  if(now-lastStatus>=1000){
     Serial.print("s:");
     Serial.print(currentPosition);
     Serial.print(':');
