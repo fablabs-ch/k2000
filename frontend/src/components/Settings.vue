@@ -52,6 +52,32 @@
             <ingredientConfig :canDelete="true" v-for="item in config" :value='item' @change="save"  @delete="deleteItem" :key="item.id"></ingredientConfig>
           </v-list>
        </v-card>
+
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-toolbar-title class="white--text">Import JSON DB</v-toolbar-title>
+          </v-toolbar>
+          <v-card-title>
+            <v-text-field textarea v-model="json"></v-text-field>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click.native="importJSON" >Import</v-btn>
+          </v-card-actions>
+       </v-card>
+
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-toolbar-title class="white--text">Export JSON DB</v-toolbar-title>
+          </v-toolbar>
+          <v-card-title>
+            <v-text-field textarea v-model="jsonExport"></v-text-field>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" :href="jsonUrlData" download="cocktails.json">Download</v-btn>
+          </v-card-actions>
+       </v-card>
       </v-flex>
     </v-layout>
   </v-container>
@@ -66,6 +92,9 @@ export default {
     IngredientConfig
   },
   data () {
+    fetch('/static/cocktail_22.json').then(r => r.text()).then(t => {
+      this.json = t
+    })
     return {
       newingredientConfig: this.createNewingredientConfig(),
       config: [],
@@ -74,7 +103,8 @@ export default {
         servoId: '',
         aperture: 0,
         testMsg: ''
-      }
+      },
+      json: ''
     }
   },
   methods: {
@@ -143,6 +173,26 @@ export default {
       }, response => {
         this.$root.notify('Error with test message')
       })
+    },
+    importJSON () {
+      const json = JSON.parse(this.json || '{ingredients: [], recipies: []}')
+      for (let i = 0; i < json.ingredients.length; i++) {
+        this.$http.post('ingredients', json.ingredients[i])
+      }
+      for (let i = 0; i < json.recipes.length; i++) {
+        this.$http.post('recipies', json.recipes[i])
+      }
+    }
+  },
+  computed: {
+    jsonExport () {
+      return JSON.stringify({
+        ingredients: Object.values(this.$root.ingredients),
+        recipies: this.$root.cocktails
+      })
+    },
+    jsonUrlData () {
+      return `data:text/json;charset=utf-8,${encodeURIComponent(this.jsonExport)}`
     }
   },
   mounted () {

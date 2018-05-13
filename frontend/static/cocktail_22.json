@@ -505,177 +505,177 @@
 {
 "id":1,
 "name":"Whisky",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":2,
 "name":"Gin",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":3,
 "name":"Rhum blanc",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":4,
 "name":"Rhum Ambré",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":5,
 "name":"Vodka",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":6,
 "name":"Tequila",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":7,
 "name":"Curaçao bleu",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":8,
 "name":"Cointreau",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":9,
 "name":"Martini",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":10,
 "name":"Ananas",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":11,
 "name":"Lait de Coco",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":12,
 "name":"Passion",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":13,
 "name":"Orange",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":14,
 "name":"Citron Vert",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":15,
 "name":"Citron",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":16,
 "name":"Cranberry",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":17,
 "name":"Coca",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":18,
 "name":"Perrier",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":19,
 "name":"Tonic",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":20,
 "name":"melon",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":21,
 "name":"Grenadine",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":22,
 "name":"canne",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":23,
 "name":"orgeat",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":24,
 "name":"",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 },
 {
 "id":25,
 "name":"Angostura bitters",
-"type": "TBD",
+"type": "ALCOHOL",
 "manual": false,
-"color": "TBD"
+"color": "#ffffff"
 }
 ]
 }

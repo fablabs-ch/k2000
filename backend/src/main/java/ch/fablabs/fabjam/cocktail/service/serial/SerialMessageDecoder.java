@@ -1,11 +1,8 @@
 package ch.fablabs.fabjam.cocktail.service.serial;
 
 import ch.fablabs.fabjam.cocktail.data.serial.SerialStatus;
-import ch.fablabs.fabjam.cocktail.data.type.JmsTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -13,9 +10,8 @@ import org.springframework.stereotype.Service;
 public class SerialMessageDecoder {
 
 	@Autowired
-	private JmsTemplate jmsTemplate;
+	private SerialService serialService;
 
-	@JmsListener(destination = JmsTopic.SERIAL_INPUT)
 	public void receiveMessage(String rawLine) {
 		String[] split = rawLine.split(":");
 		String command = split[0];
@@ -31,15 +27,17 @@ public class SerialMessageDecoder {
 	}
 
 	protected void decodeStatus(String raw, String[] parts) {
-		if (parts.length == 3) {
+		if (parts.length == 4) {
 			try {
 				int dist = (int) Double.parseDouble(parts[1]);
 				int weight = (int) Double.parseDouble(parts[2]);
+				int pressure = (int) Double.parseDouble(parts[2]);
 				SerialStatus status = SerialStatus.builder()
 					.carrierDistMm(dist)
 					.payloadWeightGr(weight)
+					.pressureMBar(pressure)
 					.build();
-				jmsTemplate.convertAndSend(JmsTopic.SERIAL_STATUS, status);
+				serialService.statusReceived(status);
 			} catch (NumberFormatException ex) {
 				LOG.error("Unable to parse integer from status: {}", raw);
 			}
@@ -49,6 +47,6 @@ public class SerialMessageDecoder {
 	}
 
 	protected void decodeEndOfCOmmand(String raw, String[] parts) {
-		jmsTemplate.convertAndSend(JmsTopic.SERIAL_END_OF_COMMAND, parts[0]);
+		serialService.endOfCommandReceived(parts[0]);
 	}
 }
