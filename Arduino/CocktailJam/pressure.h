@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // in pression unit
-#define TARGET_PRESSURE_HYSTERESIS 100
+#define TARGET_PRESSURE_HYSTERESIS 200
 
 class Pressure
 {

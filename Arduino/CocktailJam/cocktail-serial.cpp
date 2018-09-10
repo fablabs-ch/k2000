@@ -4,13 +4,14 @@ CocktailSerial::CocktailSerial(Stream *stream) : stream(stream)
 {
 }
 
-void CocktailSerial::registerFunctions(FN_CALLBACK homeFunc, FN_CALLBACK tareFunc, FN_CALLBACK fillFunc, FN_CALLBACK moveFunc, FN_CALLBACK servoFunc)
+void CocktailSerial::registerFunctions(FN_CALLBACK homeFunc, FN_CALLBACK tareFunc, FN_CALLBACK fillFunc, FN_CALLBACK moveFunc, FN_CALLBACK servoFunc, FN_CALLBACK resetFunc)
 {
     this->homeFunc = homeFunc;
     this->tareFunc = tareFunc;
     this->fillFunc = fillFunc;
     this->moveFunc = moveFunc;
     this->servoFunc = servoFunc;
+    this->resetFunc = resetFunc;
 }
 
 // TODO: why run? could we not use prinln from serial?
@@ -81,6 +82,9 @@ void CocktailSerial::anaylseLine(String &line)
             break;
         case 'a':
             called = this->call(this->servoFunc, arg1, arg2);
+            break;
+            case 'r':
+            called = this->call(this->resetFunc);
             break;
         }
 

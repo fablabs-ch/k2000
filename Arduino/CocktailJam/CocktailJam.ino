@@ -11,63 +11,25 @@
  * Copyright (C) 2018  Christophe Cachin & Gaétan Collaud
  */
 #include <Arduino.h>
-#include <Servo.h>
-#include <Adafruit_NeoPixel.h>
 #include <BasicStepperDriver.h>
+//#include <Adafruit_NeoPixel.h>
 #include <HX711.h>
 #ifdef __AVR__
-#include <avr/power.h>
+    #include <avr/power.h>
 #endif
+
+#include <TimerOne.h>
+
+#include "constants.h"
 #include "cocktail-serial.h";
 #include "pressure.h"
 #include "status.h"
+#include "servos.h"
+#include "carrier.h"
 
-// === MAIN CONFIGURATION =================================================================================================================================
-
-// Homing
-//#define PIN_HOME 53      // Switch pin for homing (endstop)
-#define PIN_HOME 12      // Switch pin for homing (endstop)
-#define MAXPOSITION 1000 // Maximum carrier travel in millimeter. *Depending on machine size
-
-// Stepper
-#define MOTOR_STEPS 200 // Number of steps for choosen motor stepper. *Read the motor datasheet to set it properly
-#define RPM 120
-#define MICROSTEPS 16                                                             // Define microstep. *Depends on your hardware configuration. 1, 8 or 16. 16 is maybe to fine for this machine has to be tested
-#define BELT_PITCH 2                                                              // Distance between two teeth on the belt. *Read the belt datasheet for correct parameter
-#define TEETHPULLEY 20                                                            // Number of teeth on the pulley. *Read the pulley datasheet for correct parameter
-const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY); // Number of step to get 1mm
-
-#define MOTOR_RPM 100
-#define MOTOR_ACCEL_SPEED 500 // Set acceleration speed
-#define MOTOR_DECEL_SPEED 500 // Set deceleration speed
-
-#define PIN_DIR A2 // Pin on Pololu 4988
-#define PIN_STEP A1
-#define PIN_ENABLE A3
-
-// Servo
-#define NBSERVOS 6
-#define SERVO_OPEN_DEGR 40    // Servo angle for open state. *set the correct angle to get correct flow
-#define SERVO_CLOSE_DEGR 180 // Servo angle for close state. *set the correct angle to close the flow properly
-
-// Ledstrip
-#define PIN_GLASS_LED 44  // Data IN circular neopixel
-#define NBPIXELS_GLASS 16 // LED Quantity on circular neopixel
-#define PIN_FRAME_LED 45  // Data IN neopixel strip
-#define NBPIXELS_FRAME 40 // LED Quantity on neopixel strip
-
-// LoadCell
-#define LOAD_CELL_DOUT A4
-#define LOAD_CELL_CLK A5
-
-//Pump
-#define PIN_PUMP 9
-#define PIN_PRESSURE_SENSOR A0
-
-int currentPosition = 0;
 int steps_to_do = 0;
 int endstop = 0;
-int servo_pins[NBSERVOS] = { 3, 4, 5, 6, 7, 8}; // Define servo pins in an array
+
 float CALIBRATION_FACTOR = 1980;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
 int targetWeight = 0;                                    // Weight initialization
 int currentWeight = 0;
@@ -75,80 +37,35 @@ int infill_purcentage = 0;
 int pixelGlassToDisplay = 0;
 int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
 
-BasicStepperDriver stepper(MOTOR_STEPS, PIN_DIR, PIN_STEP, PIN_ENABLE);
-Servo servo[NBSERVOS];                      //Servo object in an array
+BasicStepperDriver stepper(MOTOR_STEPS, PIN_STEPPER_DIR, PIN_STEPPER_STEP, PIN_STEPPER_ENABLED);
 HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
-Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
+// Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
+// Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
+
+Carrier carrier(&stepper);
 CocktailSerial cocktailSerial(&Serial);
-Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP, 500);
-Status status(&Serial, &currentWeight, &currentPosition, &pressure);
+Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP, 700);
+Status status(&Serial, &currentWeight, &carrier, &pressure);
+Servos servos;
 
 //=== CARRIER =================================================================================================================================
+void reset(){
+    Serial.println("i:reset called");
+    carrier.release();
+}
 void moveCarrierToHome()
-{ // Initialize carrier position
+{
+    // Initialize carrier position
     Serial.println("i:home called");
-    //stepper.move(50 * MICROSTEPS);
-
-    int j = 0;
-    int endstop = digitalRead(PIN_HOME);
-
-    stepper.enable();
-    stepper.setRPM(MOTOR_RPM);
-    //stepper.startMove(200);
-      stepper.startMove(-100000 * MOTOR_STEPS * MICROSTEPS);
-
-    while (endstop == LOW)
-    {
-      stepper.nextAction();
-      endstop = digitalRead(PIN_HOME);                                                             //Show glass animation
-      loop();
-
-        //stepper.move(MICROSTEPS);
-        // While home switch is not activated move stepper back to it.
-        //moveCarrierToHome();
-    }
-    stepper.startBrake();
-
-    while(stepper.getCurrentState() != stepper.STOPPED){
-      stepper.nextAction();                                                             //Show glass animation
-      loop();
-    }
-
-    stepper.stop();
-    stepper.disable();
-    currentPosition = 0;
+    carrier.homing();
     Serial.println("i:ok"); // Send position confirmation
 }
 
 void moveCarrierToPosition(int distMm)
 {
     Serial.println("i:move called");
-
-    int targetPosition = distMm;
-
-    pixelFrameToDisplay = (targetPosition / MAXPOSITION) / NBPIXELS_FRAME; // Calculate until which pixel the leds have to be turned on according to sent position.
-
-    // TODO review: We need to also clear old pixels?
-    for (int i = 0; i < pixelFrameToDisplay; i++)
-    {
-        pixels_frame.setPixelColor(i, pixels_frame.Color(0, 150, 0)); // Set green color
-    }
-    pixels_frame.show();
-
-    steps_to_do = (targetPosition - currentPosition) * STEPS_PER_MM;
-
-    stepper.enable();
-    stepper.startMove(steps_to_do);
-    while(stepper.getCurrentState() != stepper.STOPPED){
-      stepper.nextAction();
-      loop();
-    }
-    stepper.disable();
-    currentPosition = targetPosition;
-    //fill(); // TODO: review why fill? since it is send by server after we send OK
+    carrier.move(distMm);
     Serial.println("i:ok");
-    // TODO: review do we not need cocktailSerial.run() ?
 }
 
 //=== WEIGHT & FILL============================================================================================================================
@@ -161,14 +78,12 @@ void tareScale()
 
 float computeCurrentWeight()
 { //Check glass weight and return it
-    scale.set_scale(CALIBRATION_FACTOR);
-    currentWeight = scale.get_units();
+    currentWeight = -scale.get_units();
     return currentWeight;
 }
 
 void servoAperture(int servoId, int apertureInPercent){
-    //TODO convert percentage in degree
-    servo[servoId].write(apertureInPercent);
+    servos.set(servoId, apertureInPercent);
 }
 
 void fillGlass(int distMm, int nServo, int weightGr)
@@ -181,60 +96,51 @@ void fillGlass(int distMm, int nServo, int weightGr)
     Serial.println(weightGr);
 
     // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
-    moveCarrierToPosition(distMm);
+   // moveCarrierToPosition(distMm);
 
-    servo[nServo].write(SERVO_OPEN_DEGR);
+    //servos.open(nServo);
 
     targetWeight = weightGr;
 
     do
     {
         currentWeight = computeCurrentWeight();
-        //servo[nServo].write(SERVO_OPEN_DEGR);                                             //Fill glass
-        pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
-        pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
-        pixels_glass.show();                                                              //Show glass animation
+//        pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
+//        pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
+//        pixels_glass.show();                                                              //Show glass animation
         loop();
     } while (currentWeight < targetWeight);
 
-    servo[nServo].write(SERVO_CLOSE_DEGR);
-}
-
-void closeAllServos()
-{
-    for (int s = 0; s < NBSERVOS; s++)
-    {
-        servo[s].write(SERVO_CLOSE_DEGR);
-    }
+    servos.close(nServo);
 }
 
 void setup()
 {
     Serial.begin(115200);
 
-    pinMode(PIN_HOME, INPUT);
-    digitalWrite(PIN_HOME, HIGH); // Activate pullup home pin
-
     pinMode(PIN_PUMP, OUTPUT);
     digitalWrite(PIN_PUMP, LOW);
-
-    stepper.begin(RPM, MICROSTEPS);
-    stepper.disable();
-    stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL_SPEED, MOTOR_DECEL_SPEED);
 
     int i = 0;
     int j = 4;
 
-    for (int i = 0; i < NBSERVOS; i++)
-    {
-        servo[i].attach(servo_pins[i]);
-    }
+    scale.set_scale(CALIBRATION_FACTOR);
 
-    closeAllServos();
+    //Timer1.initialize(1000); // set a timer of length 100000 microseconds (or 0.1 sec - or 10Hz => the led will blink 5 times, 5 cycles of on-and-off, per second)
+    //Timer1.attachInterrupt( timerIsr ); // attach the service routine here
+
+    servos.init();
+    carrier.init();
+
 //    tareScale();
 
-    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture);
+    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture, (void*)reset);
     Serial.println("i:ready");
+ }
+
+ void timerIsr() {
+    //carrier.run();
+    stepper.nextAction();
  }
 
 unsigned long lastLoop = 0;
@@ -248,8 +154,12 @@ void loop()
     }
     lastLoop = now;
 
+    //computeCurrentWeight();
+
     cocktailSerial.run();
     pressure.run(dtMs);
     status.run(dtMs);
+    servos.run(dtMs);
+    carrier.run();
 
 }
