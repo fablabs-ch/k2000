@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Component
@@ -14,9 +15,13 @@ public class ConnexionChecker implements CommandLineRunner {
 	@Autowired
 	private SerialService serialService;
 
+	@Autowired
+	private Executor threadPoolTaskExecutor;
+
 	@Override
 	public void run(String... strings) throws Exception {
-		new Thread(() -> {
+		threadPoolTaskExecutor.execute(() -> {
+			Thread.currentThread().setName("ConnexionChecker");
 			try {
 				while (!Thread.interrupted()) {
 					serialService.checkConnexionStatus();
@@ -25,6 +30,6 @@ public class ConnexionChecker implements CommandLineRunner {
 			} catch (Exception ex) {
 				LOG.error("Error in connexion checker", ex);
 			}
-		}).start();
+		});
 	}
 }

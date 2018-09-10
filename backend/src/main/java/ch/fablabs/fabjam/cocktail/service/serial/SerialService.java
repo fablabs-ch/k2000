@@ -7,13 +7,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import rx.Observable;
+import rx.Subscription;
+import rx.subjects.AsyncSubject;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.ReplaySubject;
+import rx.subjects.Subject;
 
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingDeque;
 
 @Slf4j
 @Service
@@ -21,9 +31,14 @@ public class SerialService {
 
 	public static Duration CONNEXION_TIMEOUT = Duration.ofMillis(2000);
 
+	@Autowired
+	private Executor threadPoolTaskExecutor;
+
+
 	private BehaviorSubject<SerialStatus> serialStatus;
 	private BehaviorSubject<EndOfCommand> endOfCommand;
 	private BehaviorSubject<ConnexionStatus> connexionStatus;
+	private BlockingDeque<SseStatus> sseStatus;
 	private Instant lastCommand;
 
 	private final List<SseEmitter> emitters = Collections.synchronizedList(new LinkedList<>());
@@ -32,6 +47,33 @@ public class SerialService {
 		this.serialStatus = BehaviorSubject.create((SerialStatus) null);
 		this.endOfCommand = BehaviorSubject.create((EndOfCommand) null);
 		this.connexionStatus = BehaviorSubject.create(ConnexionStatus.builder().connected(false).build());
+		this.sseStatus = new LinkedBlockingDeque<>();
+	}
+
+	@PostConstruct
+	protected void postConstruct() {
+		threadPoolTaskExecutor.execute(() -> {
+			Thread.currentThread().setName("SSE fowarder");
+
+			try {
+				while (!Thread.interrupted()) {
+					SseStatus status = this.sseStatus.take();
+
+					Iterator<SseEmitter> iterator = emitters.iterator();
+					while (iterator.hasNext()) {
+						SseEmitter emitter = iterator.next();
+						try {
+							emitter.send(status);
+						} catch (Exception e) {
+							LOG.warn("Unable to emit SSE {}", e.getMessage());
+							iterator.remove();
+						}
+					}
+				}
+			} catch (Exception ex) {
+				LOG.error("Error with sse forwarder", ex);
+			}
+		});
 	}
 
 	public BehaviorSubject<SerialStatus> getSerialStatus() {
@@ -77,22 +119,12 @@ public class SerialService {
 		return emmitter;
 	}
 
+
 	protected void broadCastToSSEListener() {
-		SseStatus sseStatus = SseStatus.builder()
+		this.sseStatus.add(SseStatus.builder()
 			.connexion(connexionStatus.getValue())
 			.status(serialStatus.getValue())
-			.build();
-
-		Iterator<SseEmitter> iterator = emitters.iterator();
-		while (iterator.hasNext()) {
-			SseEmitter emitter = iterator.next();
-			try {
-				emitter.send(sseStatus);
-			} catch (Exception e) {
-				LOG.warn("Unable to emit SSE {}", e.getMessage());
-				iterator.remove();
-			}
-		}
+			.build());
 	}
 
 	@Builder

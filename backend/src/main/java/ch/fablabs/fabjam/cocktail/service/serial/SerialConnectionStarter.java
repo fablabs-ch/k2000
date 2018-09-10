@@ -31,6 +31,13 @@ public class SerialConnectionStarter implements CommandLineRunner {
 		serialConnection = Optional.of(new SerialConnection(port));
 		autowireCapableBeanFactory.autowireBean(serialConnection.get());
 		threadPoolTaskExecutor.execute(serialConnection.get());
+
+		threadPoolTaskExecutor.execute(() -> {
+			Thread.currentThread().setName("Serial connection starter");
+			serialConnection.ifPresent(() -> {
+				
+			});
+		});
 	}
 
 	@PreDestroy

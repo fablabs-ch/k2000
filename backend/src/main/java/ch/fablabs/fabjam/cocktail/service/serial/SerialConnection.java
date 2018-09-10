@@ -33,6 +33,7 @@ public class SerialConnection implements Runnable {
 
 	@Override
 	public void run() {
+		Thread.currentThread().setName("SerialConnection");
 
 		while (running) {
 			try {
