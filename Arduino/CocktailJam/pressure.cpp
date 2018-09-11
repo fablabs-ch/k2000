@@ -11,7 +11,7 @@ long Pressure::getCurrentPressure(){
 }
 
 void Pressure::run(unsigned long dtMs){
-    this->currentPressure = readPressure(); //stupid, to remove
+    this->currentPressure = readPressure();
     if(this->currentPressure<this->targetPressureStart){
         digitalWrite(this->pinPump, HIGH);
     }

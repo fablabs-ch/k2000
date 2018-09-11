@@ -41,7 +41,7 @@ const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY)
 #define LOAD_CELL_CLK A5
 
 //Pump
-#define PIN_PUMP 2
+#define PIN_PUMP 9
 #define PIN_PRESSURE_SENSOR A0
 
 #endif

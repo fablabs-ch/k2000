@@ -23,6 +23,8 @@ class Carrier
 
         void release();
 
+        bool isMoving();
+
     private:
         BasicStepperDriver* stepper;
 

@@ -60,5 +60,8 @@ void Carrier::homing(){
     }
 
     this->currentPosition = 0;
-    this->stepper->disable();
+}
+
+bool Carrier::isMoving(){
+    return this->stepper->getCurrentState() != this->stepper->STOPPED;
 }

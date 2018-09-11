@@ -12,13 +12,10 @@
  */
 #include <Arduino.h>
 #include <BasicStepperDriver.h>
-//#include <Adafruit_NeoPixel.h>
 #include <HX711.h>
 #ifdef __AVR__
     #include <avr/power.h>
 #endif
-
-#include <TimerOne.h>
 
 #include "constants.h"
 #include "cocktail-serial.h";
@@ -39,8 +36,6 @@ int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
 
 BasicStepperDriver stepper(MOTOR_STEPS, PIN_STEPPER_DIR, PIN_STEPPER_STEP, PIN_STEPPER_ENABLED);
 HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
-// Adafruit_NeoPixel pixels_glass = Adafruit_NeoPixel(NBPIXELS_GLASS, PIN_GLASS_LED, NEO_GRB + NEO_KHZ800);
-// Adafruit_NeoPixel pixels_frame = Adafruit_NeoPixel(NBPIXELS_FRAME, PIN_FRAME_LED, NEO_GRB + NEO_KHZ800);
 
 Carrier carrier(&stepper);
 CocktailSerial cocktailSerial(&Serial);
@@ -77,8 +72,9 @@ void tareScale()
 }
 
 float computeCurrentWeight()
-{ //Check glass weight and return it
-    currentWeight = -scale.get_units();
+{
+    //Check glass weight and return it
+    currentWeight = -scale.get_units(1);
     return currentWeight;
 }
 
@@ -126,9 +122,6 @@ void setup()
 
     scale.set_scale(CALIBRATION_FACTOR);
 
-    //Timer1.initialize(1000); // set a timer of length 100000 microseconds (or 0.1 sec - or 10Hz => the led will blink 5 times, 5 cycles of on-and-off, per second)
-    //Timer1.attachInterrupt( timerIsr ); // attach the service routine here
-
     servos.init();
     carrier.init();
 
@@ -136,11 +129,6 @@ void setup()
 
     cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture, (void*)reset);
     Serial.println("i:ready");
- }
-
- void timerIsr() {
-    //carrier.run();
-    stepper.nextAction();
  }
 
 unsigned long lastLoop = 0;
@@ -154,7 +142,6 @@ void loop()
     }
     lastLoop = now;
 
-    //computeCurrentWeight();
 
     cocktailSerial.run();
     pressure.run(dtMs);
@@ -162,4 +149,10 @@ void loop()
     servos.run(dtMs);
     carrier.run();
 
+    if(!carrier.isMoving()){
+        // todo create class to handle hx711
+        computeCurrentWeight();
+    }
+
 }
+
