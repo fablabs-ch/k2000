@@ -14,7 +14,15 @@ class CocktailSerial
   public:
     CocktailSerial(Stream *stream);
 
-    void registerFunctions(FN_CALLBACK homeFunc, FN_CALLBACK tareFunc, FN_CALLBACK fillFunc, FN_CALLBACK moveFunc, FN_CALLBACK servoFunc, FN_CALLBACK resetFunc);
+    void registerFunctions(
+        FN_CALLBACK homeFunc,
+        FN_CALLBACK tareFunc,
+        FN_CALLBACK moveFunc,
+        FN_CALLBACK servoFunc,
+        FN_CALLBACK releaseFunc,
+        FN_CALLBACK emergencyFunc,
+        FN_CALLBACK queueFunc,
+        FN_CALLBACK startFunc);
 
     void run();
 
@@ -27,10 +35,12 @@ class CocktailSerial
 
     FN_CALLBACK homeFunc = 0;
     FN_CALLBACK tareFunc = 0;
-    FN_CALLBACK fillFunc = 0;
     FN_CALLBACK moveFunc = 0;
     FN_CALLBACK servoFunc = 0;
-    FN_CALLBACK resetFunc = 0;
+    FN_CALLBACK releaseFunc = 0;
+    FN_CALLBACK emergencyFunc = 0;
+    FN_CALLBACK queueFunc = 0;
+    FN_CALLBACK startFunc = 0;
 };
 
 #endif

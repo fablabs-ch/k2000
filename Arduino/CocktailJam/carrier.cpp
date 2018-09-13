@@ -14,8 +14,6 @@ void Carrier::init(){
 void Carrier::move(long targetPosition){
     int steps_to_do = ((targetPosition - this->currentPosition) * STEPS_PER_MM);
     this->stepper->startMove(steps_to_do);
-    Serial.print("set pos to ");
-    Serial.println(steps_to_do);
     this->stepper->enable();
     this->currentPosition = targetPosition;
 }

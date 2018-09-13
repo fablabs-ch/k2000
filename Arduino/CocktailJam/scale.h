@@ -19,11 +19,9 @@ class Scale
 
         void tare();
 
-        void enableReading(bool);
     private:
         HX711* hx711;
         float gramme;
-        bool enabled = true;
 
 };
 

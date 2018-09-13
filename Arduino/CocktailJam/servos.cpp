@@ -12,11 +12,11 @@ void Servos::init(){
 }
 
 void Servos::close(int index){
-    this->set(index, 100);
+    this->set(index, this->servo_close[index]);
 }
 
 void Servos::open(int index){
-    this->set(index, 0);
+    this->set(index, this->servo_open[index]);
 }
 
 void Servos::set(int index, int percent){
@@ -43,4 +43,8 @@ void  Servos::run(unsigned long dtMs){
             }
         }
     }
+}
+
+int Servos::getServoPosMm(int servoId){
+    return this->servo_posMm[servoId];
 }

@@ -6,7 +6,7 @@
 #include "carrier.h"
 #include "scale.h"
 
-#define STATUS_DELAY_MS 100
+#define STATUS_DELAY_MS 10000000
 
 class Status
 {

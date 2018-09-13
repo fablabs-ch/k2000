@@ -24,6 +24,7 @@
 #include "servos.h"
 #include "carrier.h"
 #include "scale.h"
+#include "barman.h"
 
 BasicStepperDriver stepper(MOTOR_STEPS, PIN_STEPPER_DIR, PIN_STEPPER_STEP, PIN_STEPPER_ENABLED);
 HX711 hx711(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
@@ -34,70 +35,43 @@ Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP, 700);
 Scale scale(&hx711);
 Status status(&Serial, &scale, &carrier, &pressure);
 Servos servos;
+Barman barman(&scale, &carrier, &servos);
 
-//=== CARRIER =================================================================================================================================
-void reset(){
+void release(){
     Serial.println("i:reset called");
     carrier.release();
 }
-void moveCarrierToHome()
-{
-    // Initialize carrier position
+void moveCarrierToHome(){
     Serial.println("i:home called");
     carrier.homing();
     Serial.println("i:ok"); // Send position confirmation
 }
 
-void moveCarrierToPosition(int distMm)
-{
+void moveCarrierToPosition(int distMm){
     Serial.println("i:move called");
     carrier.move(distMm);
     Serial.println("i:ok");
 }
 
-//=== WEIGHT & FILL============================================================================================================================
-void tareScale()
-{
+void tareScale(){
     Serial.println("i:tare called");
     scale.tare();        // Reset the scale to zero
     Serial.println("i:ok"); // Send tare confirmation
 }
-
 void servoAperture(int servoId, int apertureInPercent){
     servos.set(servoId, apertureInPercent);
 }
-
-void fillGlass(int distMm, int nServo, int weightGr)
-{
-////Open Servo x while weight is not equal target weight including glass animation
-//    Serial.print("i:fill called, dist=");
-//    Serial.print(distMm);
-//    Serial.print(", servo=");
-//    Serial.print(nServo);
-//    Serial.print(", weight=");
-//    Serial.println(weightGr);
-//
-//    // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
-//   // moveCarrierToPosition(distMm);
-//
-//    //servos.open(nServo);
-//
-//    targetWeight = weightGr;
-//
-//    do
-//    {
-//        currentWeight = computeCurrentWeight();
-////        pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
-////        pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
-////        pixels_glass.show();                                                              //Show glass animation
-//        loop();
-//    } while (currentWeight < targetWeight);
-//
-//    servos.close(nServo);
+void emergency(){
+    // TODO close servo, release carrier, stop pump ?
+}
+void queue(int servo, int gramme){
+    barman.addToQueue(servo, gramme);
+}
+void start(){
+    barman.start();
 }
 
-void setup()
-{
+void setup(){
     Serial.begin(115200);
 
     pinMode(PIN_PUMP, OUTPUT);
@@ -106,18 +80,25 @@ void setup()
     int i = 0;
     int j = 4;
 
-
     servos.init();
     carrier.init();
     scale.init();
+    barman.init();
 
-    cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture, (void*)reset);
+    cocktailSerial.registerFunctions(
+        (void *) moveCarrierToHome,
+        (void *)tareScale,
+        (void *)moveCarrierToPosition,
+        (void *)servoAperture,
+        (void*)release,
+        (void*)emergency,
+        (void*)queue,
+        (void*)start);
     Serial.println("i:ready");
  }
 
 unsigned long lastLoop = 0;
-void loop()
-{
+void loop(){
     unsigned long now = millis();
     unsigned long dtMs = 0;
     if (lastLoop < now) {
@@ -126,14 +107,12 @@ void loop()
     }
     lastLoop = now;
 
-    // scale take time, disable it when stepper is running
-    scale.enableReading(!carrier.isMoving());
-
     cocktailSerial.run();
     pressure.run(dtMs);
     servos.run(dtMs);
     carrier.run();
     scale.run(dtMs);
+    barman.run(dtMs);
     status.run(dtMs);
 
 }
