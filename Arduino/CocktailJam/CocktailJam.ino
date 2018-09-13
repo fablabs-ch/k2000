@@ -23,24 +23,16 @@
 #include "status.h"
 #include "servos.h"
 #include "carrier.h"
-
-int steps_to_do = 0;
-int endstop = 0;
-
-float CALIBRATION_FACTOR = 1980;                    // Change this calibration factor as per your load cell once it is found you may need to vary it in thousands
-int targetWeight = 0;                                    // Weight initialization
-int currentWeight = 0;
-int infill_purcentage = 0;
-int pixelGlassToDisplay = 0;
-int pixelFrameToDisplay = 0; // TODO: Review why needed as global?
+#include "scale.h"
 
 BasicStepperDriver stepper(MOTOR_STEPS, PIN_STEPPER_DIR, PIN_STEPPER_STEP, PIN_STEPPER_ENABLED);
-HX711 scale(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
+HX711 hx711(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
 
 Carrier carrier(&stepper);
 CocktailSerial cocktailSerial(&Serial);
 Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP, 700);
-Status status(&Serial, &currentWeight, &carrier, &pressure);
+Scale scale(&hx711);
+Status status(&Serial, &scale, &carrier, &pressure);
 Servos servos;
 
 //=== CARRIER =================================================================================================================================
@@ -67,15 +59,8 @@ void moveCarrierToPosition(int distMm)
 void tareScale()
 {
     Serial.println("i:tare called");
-    scale.tare();         // Reset the scale to zero
+    scale.tare();        // Reset the scale to zero
     Serial.println("i:ok"); // Send tare confirmation
-}
-
-float computeCurrentWeight()
-{
-    //Check glass weight and return it
-    currentWeight = -scale.get_units(1);
-    return currentWeight;
 }
 
 void servoAperture(int servoId, int apertureInPercent){
@@ -83,31 +68,32 @@ void servoAperture(int servoId, int apertureInPercent){
 }
 
 void fillGlass(int distMm, int nServo, int weightGr)
-{ //Open Servo x while weight is not equal target weight including glass animation
-    Serial.print("i:fill called, dist=");
-    Serial.print(distMm);
-    Serial.print(", servo=");
-    Serial.print(nServo);
-    Serial.print(", weight=");
-    Serial.println(weightGr);
-
-    // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
-   // moveCarrierToPosition(distMm);
-
-    //servos.open(nServo);
-
-    targetWeight = weightGr;
-
-    do
-    {
-        currentWeight = computeCurrentWeight();
-//        pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
-//        pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
-//        pixels_glass.show();                                                              //Show glass animation
-        loop();
-    } while (currentWeight < targetWeight);
-
-    servos.close(nServo);
+{
+////Open Servo x while weight is not equal target weight including glass animation
+//    Serial.print("i:fill called, dist=");
+//    Serial.print(distMm);
+//    Serial.print(", servo=");
+//    Serial.print(nServo);
+//    Serial.print(", weight=");
+//    Serial.println(weightGr);
+//
+//    // TODO: review why do we move at the end of fill? the moveShouldbe called by server/management code to have function isolation
+//   // moveCarrierToPosition(distMm);
+//
+//    //servos.open(nServo);
+//
+//    targetWeight = weightGr;
+//
+//    do
+//    {
+//        currentWeight = computeCurrentWeight();
+////        pixelGlassToDisplay = NBPIXELS_GLASS * currentWeight / targetWeight;              //Calculate which pixel to display according to current weight
+////        pixels_glass.setPixelColor(pixelGlassToDisplay, pixels_glass.Color(50, 90, 255)); //Set dark blue color
+////        pixels_glass.show();                                                              //Show glass animation
+//        loop();
+//    } while (currentWeight < targetWeight);
+//
+//    servos.close(nServo);
 }
 
 void setup()
@@ -120,12 +106,10 @@ void setup()
     int i = 0;
     int j = 4;
 
-    scale.set_scale(CALIBRATION_FACTOR);
 
     servos.init();
     carrier.init();
-
-//    tareScale();
+    scale.init();
 
     cocktailSerial.registerFunctions((void *) moveCarrierToHome, (void *)tareScale, (void *)fillGlass, (void *)moveCarrierToPosition, (void *)servoAperture, (void*)reset);
     Serial.println("i:ready");
@@ -142,17 +126,15 @@ void loop()
     }
     lastLoop = now;
 
+    // scale take time, disable it when stepper is running
+    scale.enableReading(!carrier.isMoving());
 
     cocktailSerial.run();
     pressure.run(dtMs);
-    status.run(dtMs);
     servos.run(dtMs);
     carrier.run();
-
-    if(!carrier.isMoving()){
-        // todo create class to handle hx711
-        computeCurrentWeight();
-    }
+    scale.run(dtMs);
+    status.run(dtMs);
 
 }
 

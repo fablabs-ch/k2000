@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 
-Status::Status(Stream *serial, int *weightGrPtr, Carrier *carrier, Pressure *pressure): serial(serial), weightGrPtr(weightGrPtr),
+Status::Status(Stream *serial, Scale *scale, Carrier *carrier, Pressure *pressure): serial(serial), scale(scale),
     carrier(carrier), pressure(pressure){
     this->acc = 0;
 }
@@ -14,7 +14,7 @@ void Status::run(unsigned long dtMs){
         this->serial->print("s:");
         this->serial->print(this->carrier->getPositionMm());
         this->serial->print(':');
-        this->serial->print(*this->weightGrPtr);
+        this->serial->print(this->scale->getGramme());
         this->serial->print(':');
         this->serial->print(this->pressure->getCurrentPressure());
         this->serial->print(":\tfps\t");

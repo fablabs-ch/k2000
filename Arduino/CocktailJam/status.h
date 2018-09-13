@@ -4,13 +4,14 @@
 #include <Arduino.h>
 #include "pressure.h"
 #include "carrier.h"
+#include "scale.h"
 
 #define STATUS_DELAY_MS 100
 
 class Status
 {
     public:
-        Status(Stream *serial, int *weightGrPtr, Carrier *carrier, Pressure *pressure);
+        Status(Stream *serial, Scale *scale, Carrier *carrier, Pressure *pressure);
 
         void run(unsigned long dtMs);
 
@@ -18,7 +19,7 @@ class Status
     int fps;
         unsigned long acc;
         Stream *serial;
-        int *weightGrPtr;
+        Scale *scale;
         Carrier *carrier;
         Pressure *pressure;
 };
