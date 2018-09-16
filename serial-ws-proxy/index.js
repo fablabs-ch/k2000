@@ -3,7 +3,7 @@
 process.title = 'node-serial-ws';
 
 // Websocket
-var webSocketsServerPort = 1337;
+var webSocketsServerPort = 8080;
 var webSocketServer = require('websocket').server;
 var http = require('http');
 var server = http.createServer(function(request, response) {
@@ -35,36 +35,40 @@ wsServer.on('request', function(request) {
 
     // user disconnected
     connection.on('close', function(connection) {
-        if (userName !== false && userColor !== false) {
+//        if (userName !== false && userColor !== false) {
             console.log((new Date()) + " Peer "
                 + connection.remoteAddress + " disconnected.");
             // remove user from the list of connected clients
             clients.splice(index, 1);
-        }
+  //      }
     });
 
 });
 
 function onReceive(msg)
 {
-  console.log("ws msg:" + msg);
-  serialPort.write(msg);
+  if(msg.type=='utf8'){
+    console.log("ws msg:" + msg.utf8Data);
+    serialPort.write(msg.utf8Data);
+  }else{
+    console.log('Unknown message type '+JSON.stringify(msg));
+  }
 }
 
 function onSerial(msg)
 {
-  console.log("uart msg:" + msg);
+//  console.log("uart msg:" + msg);
   for (var i=0; i < clients.length; i++) 
     clients[i].sendUTF(msg);
 }
 
 // Serial port
-var SerialPort = require("serialport").SerialPort
-var portName = 'COM60'; 
+var SerialPort = require("serialport");
+var portName = '/dev/ttyACM0'; 
 var buffer = "";
 
 var serialPort = new SerialPort(portName, {
-    baudrate: 9600,
+    baudRate: 115200,
     // defaults for Arduino serial communication
      dataBits: 8,
      parity: 'none',
