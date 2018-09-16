@@ -1,0 +1,18 @@
+<button mat-raised-button color="warn" (click)="emergency()">Emergency</button>
+<hr />
+<mat-form-field>
+	<input matInput type="number" placeholder="distance in mm" #distMmInput min="0" max="200" value="100"/>
+</mat-form-field>
+<button mat-raised-button (click)="move(distMmInput.value)">Move</button>
+<br />
+<mat-slider min="0" max="200" step="1" thumbLabel  tickInterval="10" [value]="distMm" [disabled]="true"></mat-slider>
+{{distMm|json}}
+
+<hr />
+
+<button mat-raised-button color="primary" (click)="home()">Home</button>
+<button mat-raised-button (click)="release()">Release</button>
+<hr />
+
+<button mat-raised-button color="accent" (click)="addToQueue()">AddToQueue</button>
+<button mat-raised-button (click)="clear()">ClearQueue</button>
