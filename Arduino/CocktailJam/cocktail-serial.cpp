@@ -12,7 +12,8 @@ void CocktailSerial::registerFunctions(
     FN_CALLBACK releaseFunc,
     FN_CALLBACK emergencyFunc,
     FN_CALLBACK queueFunc,
-    FN_CALLBACK startFunc)
+    FN_CALLBACK startFunc,
+    FN_CALLBACK clearFunc)
 {
     this->homeFunc = homeFunc;
     this->tareFunc = tareFunc;
@@ -22,6 +23,7 @@ void CocktailSerial::registerFunctions(
     this->emergencyFunc = emergencyFunc;
     this->queueFunc = queueFunc;
     this->startFunc = startFunc;
+    this->clearFunc = clearFunc;
 }
 
 // TODO: why run? could we not use prinln from serial?
@@ -64,29 +66,32 @@ void CocktailSerial::anaylseLine(String &line){
         }
 
         switch (cmd) {
-        case 'h':
-            called = this->call(this->homeFunc);
-            break;
-        case 't':
-            called = this->call(this->tareFunc);
-            break;
-        case 'm':
-            called = this->call(this->moveFunc, arg1);
-            break;
         case 'a':
             called = this->call(this->servoFunc, arg1, arg2);
             break;
-        case 'r':
-            called = this->call(this->releaseFunc);
+        case 'c':
+            called = this->call(this->clearFunc);
             break;
         case 'e':
             called = this->call(this->emergencyFunc);
             break;
+        case 'h':
+            called = this->call(this->homeFunc);
+            break;
+        case 'm':
+            called = this->call(this->moveFunc, arg1);
+            break;
         case 'q':
             called = this->call(this->queueFunc, arg1, arg2);
             break;
+        case 'r':
+            called = this->call(this->releaseFunc);
+            break;
         case 's':
             called = this->call(this->startFunc);
+            break;
+        case 't':
+            called = this->call(this->tareFunc);
             break;
         }
 

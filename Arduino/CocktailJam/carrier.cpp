@@ -1,7 +1,6 @@
 #include "carrier.h"
 
 Carrier::Carrier(BasicStepperDriver* stepper):stepper(stepper){
-//TODO move BasicStepperDriver instance creation here
 }
 
 void Carrier::init(){
@@ -12,10 +11,15 @@ void Carrier::init(){
 }
 
 void Carrier::move(long targetPosition){
-    int steps_to_do = ((targetPosition - this->currentPosition) * STEPS_PER_MM);
-    this->stepper->startMove(steps_to_do);
-    this->stepper->enable();
-    this->currentPosition = targetPosition;
+    if(this->stepper->getCurrentState() == this->stepper->STOPPED){
+        int steps_to_do = ((targetPosition - this->nextPosition) * STEPS_PER_MM);
+        long getTimeForMove(long steps);
+        this->stepper->startMove(steps_to_do);
+        this->stepper->enable();
+        this->nextPosition = targetPosition;
+    }else{
+        Serial.println("e:carrier:already_moving");
+    }
 }
 
 void Carrier::release(){
@@ -23,7 +27,7 @@ void Carrier::release(){
 }
 
 int Carrier::getPositionMm(){
-    return this->currentPosition;
+    return abs((int)(this->nextPosition - this->stepper->getStepsRemaining()*STEPS_PER_MM_REVERSE));
 }
 
 void Carrier::run(){
@@ -57,7 +61,7 @@ void Carrier::homing(){
       this->stepper->nextAction();
     }
 
-    this->currentPosition = 0;
+    this->nextPosition = 0;
 }
 
 bool Carrier::isMoving(){

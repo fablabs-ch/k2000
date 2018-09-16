@@ -22,7 +22,8 @@ class CocktailSerial
         FN_CALLBACK releaseFunc,
         FN_CALLBACK emergencyFunc,
         FN_CALLBACK queueFunc,
-        FN_CALLBACK startFunc);
+        FN_CALLBACK startFunc,
+        FN_CALLBACK clearFunc);
 
     void run();
 
@@ -41,6 +42,7 @@ class CocktailSerial
     FN_CALLBACK emergencyFunc = 0;
     FN_CALLBACK queueFunc = 0;
     FN_CALLBACK startFunc = 0;
+    FN_CALLBACK clearFunc = 0;
 };
 
 #endif

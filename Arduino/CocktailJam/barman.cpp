@@ -7,42 +7,61 @@ void Barman::init(){
 }
 
 void Barman::start(){
-    this->state = IDLE;
+    this->state = NEXT_DRINK;
+}
+void Barman::stop(){
+    this->state = WAIT_FOR_START;
+    this->clear();
+}
+void Barman::clear(){
+    this->queueSize = 0;
 }
 
 void Barman::run(unsigned long dtMs){
     if(this->delayUntilNextAction>0){
+        // wait for the action to be done
         this->delayUntilNextAction -= min(this->delayUntilNextAction, dtMs);
         return;
     }
-    if(this->state == IDLE && this->queueSize==0){
-        return; // nothing to do
-    }
     if(this->state == WAIT_FOR_START){
         return;
-    }
 
-    if(this->state == IDLE){
+    }else if(this->state == NEXT_DRINK){
         // start doing stuff
         this->currentItem = this->popFromQueue();
         int positionMm = this->servos->getServoPosMm(this->currentItem.servo);
         this->carrier->move(positionMm);
         this->state = MOVING;
-        Serial.print("moveTo ");
-        Serial.println(this->currentItem.servo);
-    }
+//        Serial.print("moveTo ");
+//        Serial.println(this->currentItem.servo);
 
-    if(this->state == MOVING && !this->carrier->isMoving()){
-        this->state = FILLING;
+    }else if(this->state == MOVING){
+        if(!this->carrier->isMoving()){
+            // drink has arrived
+            this->delayUntilNextAction = 200;
+            this->state = FILLING_START;
+        }
+
+    }else if(this->state == FILLING_START){
+        this->servos->open(this->currentItem.servo);
+        this->state = FILLING_IN_PROGRESS;
         this->delayUntilNextAction = 2000;
-    }
 
-    if(this->state == FILLING){
+    }else if(this->state == FILLING_IN_PROGRESS){
+        if(true){ // TODO if we have enough drink
+            this->servos->close(this->currentItem.servo);
+            // wait for last drop
+            this->delayUntilNextAction = 2000;
+            this->state = FILLING_END;
+        }
+
+    }else if(this->state == FILLING_END){
         if(this->queueSize==0){
             this->state = WAIT_FOR_START;
             this->carrier->move(0);
         }else{
-            this->state = IDLE;
+            // next drink
+            this->state = NEXT_DRINK;
         }
     }
 }

@@ -2,7 +2,7 @@
 #define CARRIER_H
 
 #include <Arduino.h>
-#include <BasicStepperDriver.h>
+#include "BasicStepperDriver.h"
 
 #include "constants.h"
 
@@ -28,7 +28,7 @@ class Carrier
     private:
         BasicStepperDriver* stepper;
 
-        int currentPosition = -1;
+        int nextPosition = -1;
 };
 
 #endif

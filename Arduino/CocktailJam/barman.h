@@ -15,10 +15,11 @@ typedef struct{
 
 enum QueueState{
     WAIT_FOR_START,
-    IDLE,
+    NEXT_DRINK,
     MOVING,
-    FILLING,
-    AFTER_FILL
+    FILLING_START,
+    FILLING_IN_PROGRESS,
+    FILLING_END
 };
 
 class Barman
@@ -31,6 +32,8 @@ class Barman
         void run(unsigned long dtMs);
 
         void start();
+        void stop();
+        void clear();
 
         void addToQueue(int servo, int gramme);
         QueueItem popFromQueue();

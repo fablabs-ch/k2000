@@ -11,7 +11,7 @@
  * Copyright (C) 2018  Christophe Cachin & Gaétan Collaud
  */
 #include <Arduino.h>
-#include <BasicStepperDriver.h>
+#include "BasicStepperDriver.h"
 #include <HX711.h>
 #ifdef __AVR__
     #include <avr/power.h>
@@ -31,26 +31,24 @@ HX711 hx711(LOAD_CELL_DOUT, LOAD_CELL_CLK); // Initialize loadcell on I2C pins
 
 Carrier carrier(&stepper);
 CocktailSerial cocktailSerial(&Serial);
-Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP, 700);
+Pressure pressure(PIN_PRESSURE_SENSOR, PIN_PUMP);
 Scale scale(&hx711);
-Status status(&Serial, &scale, &carrier, &pressure);
 Servos servos;
 Barman barman(&scale, &carrier, &servos);
+Status status(&Serial, &scale, &carrier, &pressure, &barman);
 
 void release(){
-    Serial.println("i:reset called");
+    Serial.println("\ni:reset called");
     carrier.release();
 }
 void moveCarrierToHome(){
-    Serial.println("i:home called");
+    Serial.println("\ni:home called");
     carrier.homing();
-    Serial.println("i:ok"); // Send position confirmation
 }
 
 void moveCarrierToPosition(int distMm){
-    Serial.println("i:move called");
+    Serial.println("\ni:move called");
     carrier.move(distMm);
-    Serial.println("i:ok");
 }
 
 void tareScale(){
@@ -62,13 +60,18 @@ void servoAperture(int servoId, int apertureInPercent){
     servos.set(servoId, apertureInPercent);
 }
 void emergency(){
-    // TODO close servo, release carrier, stop pump ?
+    barman.stop();
+    servos.closeAll();
+    carrier.release();
 }
 void queue(int servo, int gramme){
     barman.addToQueue(servo, gramme);
 }
 void start(){
     barman.start();
+}
+void clear(){
+    barman.clear();
 }
 
 void setup(){
@@ -93,8 +96,9 @@ void setup(){
         (void*)release,
         (void*)emergency,
         (void*)queue,
-        (void*)start);
-    Serial.println("i:ready");
+        (void*)start,
+        (void*)clear);
+    Serial.println("\ni:ready");
  }
 
 unsigned long lastLoop = 0;

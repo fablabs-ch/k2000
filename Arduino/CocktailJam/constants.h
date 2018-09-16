@@ -17,6 +17,7 @@
 #define BELT_PITCH 2                                                              // Distance between two teeth on the belt. *Read the belt datasheet for correct parameter
 #define TEETHPULLEY 20                                                            // Number of teeth on the pulley. *Read the pulley datasheet for correct parameter
 const int STEPS_PER_MM = (MOTOR_STEPS * MICROSTEPS) / (BELT_PITCH * TEETHPULLEY); // Number of step to get 1mm
+const float STEPS_PER_MM_REVERSE = 1.0/STEPS_PER_MM;
 
 #define MOTOR_RPM 100
 #define MOTOR_ACCEL_SPEED 1000 // Set acceleration speed

@@ -4,12 +4,13 @@
 #include <Arduino.h>
 
 // in pression unit
-#define TARGET_PRESSURE_HYSTERESIS 200
+#define TARGET_PRESSURE_HYSTERESIS 100
+#define TARGET_PRESSURE 600
 
 class Pressure
 {
     public:
-        Pressure(int pinPressionSensor, int pinPump, int targetPression);
+        Pressure(int pinPressionSensor, int pinPump);
 
         void run(unsigned long dtMs);
 
@@ -18,7 +19,6 @@ class Pressure
     private:
         int pinPressure;
         int pinPump;
-        int targetPressure;
         long currentPressure = -1;
         int targetPressureStop;
         int targetPressureStart;
