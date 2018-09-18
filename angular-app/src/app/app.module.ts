@@ -5,13 +5,17 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BarStatusComponent} from './bar-status/bar-status.component';
 import {ControlsComponent} from './controls/controls.component';
-import {MatButtonModule, MatFormFieldModule, MatInputModule, MatSliderModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatSliderModule} from '@angular/material';
+import { CocktailListComponent } from './cocktail-list/cocktail-list.component';
+import { CocktailItemComponent } from './cocktail-item/cocktail-item.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		BarStatusComponent,
-		ControlsComponent
+		ControlsComponent,
+		CocktailListComponent,
+		CocktailItemComponent
 	],
 	imports: [
 		BrowserModule,
@@ -20,7 +24,9 @@ import {MatButtonModule, MatFormFieldModule, MatInputModule, MatSliderModule} fr
 		MatButtonModule,
 		MatInputModule,
 		MatFormFieldModule,
-		MatSliderModule
+		MatSliderModule,
+		MatExpansionModule,
+		MatCardModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

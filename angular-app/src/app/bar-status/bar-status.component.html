@@ -1,3 +1,15 @@
-<p>
-  {{status|json}}
-</p>
+<mat-form-field>
+	<input matInput placeholder="Fps" [value]="status?.fps" [disabled]="true">
+</mat-form-field>
+<mat-form-field>
+	<input matInput placeholder="QueueSize" [value]="status?.queueSize" [disabled]="true">
+</mat-form-field>
+<mat-form-field>
+	<input matInput placeholder="Position" [value]="status?.position" [disabled]="true">
+</mat-form-field>
+<mat-form-field>
+	<input matInput placeholder="Pression" [value]="status?.pression" [disabled]="true">
+</mat-form-field>
+<mat-form-field>
+	<input matInput placeholder="Weight" [value]="status?.weight" [disabled]="true">
+</mat-form-field>

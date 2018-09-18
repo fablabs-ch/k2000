@@ -1,0 +1,10 @@
+:host {
+	margin-top: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+mat-form-field {
+	margin: 10px;
+	/*flex: 1;*/
+}

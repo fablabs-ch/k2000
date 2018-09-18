@@ -1,0 +1,9 @@
+:host {
+	display: flex;
+	margin-top: 10px;
+	/*justify-content: space-between;*/
+}
+
+app-cocktail-item {
+	flex: 0 1 200px;
+}

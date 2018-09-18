@@ -30,6 +30,10 @@ export class ControlsComponent implements OnInit {
 		this._communicationService.home();
 	}
 
+	public tare() {
+		this._communicationService.tare();
+	}
+
 	public emergency() {
 		this._communicationService.emergency();
 	}

@@ -1,18 +1,32 @@
-<button mat-raised-button color="warn" (click)="emergency()">Emergency</button>
-<hr />
-<mat-form-field>
-	<input matInput type="number" placeholder="distance in mm" #distMmInput min="0" max="200" value="100"/>
-</mat-form-field>
-<button mat-raised-button (click)="move(distMmInput.value)">Move</button>
-<br />
-<mat-slider min="0" max="200" step="1" thumbLabel  tickInterval="10" [value]="distMm" [disabled]="true"></mat-slider>
-{{distMm|json}}
 
-<hr />
+<mat-expansion-panel>
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+			This is the expansion title
+		</mat-panel-title>
+		<mat-panel-description>
+			Control panel
+		</mat-panel-description>
+	</mat-expansion-panel-header>
 
-<button mat-raised-button color="primary" (click)="home()">Home</button>
-<button mat-raised-button (click)="release()">Release</button>
-<hr />
 
-<button mat-raised-button color="accent" (click)="addToQueue()">AddToQueue</button>
-<button mat-raised-button (click)="clear()">ClearQueue</button>
+	<button mat-raised-button color="warn" (click)="emergency()">Emergency</button>
+	<button mat-raised-button color="primary" (click)="home()">Home</button>
+	<button mat-raised-button color="primary" (click)="tare()">Tare</button>
+	<button mat-raised-button (click)="release()">Release</button>
+	<hr />
+	<mat-form-field>
+		<input matInput type="number" placeholder="distance in mm" (keyup.enter)="move(distMmInput.value)" #distMmInput min="0" max="200" value="100"/>
+	</mat-form-field>
+	<button mat-raised-button (click)="move(distMmInput.value)">Move</button>
+	<br />
+	<mat-slider min="0" max="200" step="1" thumbLabel  tickInterval="10" [value]="distMm" [disabled]="true"></mat-slider>
+
+
+	<!--<hr />-->
+<!---->
+	<!--<button mat-raised-button color="accent" (click)="addToQueue()">AddToQueue</button>-->
+	<!--<button mat-raised-button (click)="clear()">ClearQueue</button>-->
+
+
+</mat-expansion-panel>

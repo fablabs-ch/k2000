@@ -74,6 +74,10 @@ export class CommunicationService {
 		this.websocketService.sendCommand('h');
 	}
 
+	public tare() {
+		this.websocketService.sendCommand('t');
+	}
+
 	public emergency() {
 		this.websocketService.sendCommand('e');
 	}
@@ -92,6 +96,10 @@ export class CommunicationService {
 
 	public clear() {
 		this.websocketService.sendCommand('c');
+	}
+
+	public start() {
+		this.websocketService.sendCommand('s');
 	}
 
 	public aperture(servo: number, percent: number) {
