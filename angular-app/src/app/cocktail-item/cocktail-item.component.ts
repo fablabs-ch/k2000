@@ -16,12 +16,16 @@ export class CocktailItem {
 }
 
 export class Cocktail {
-	constructor(private _name: string, private _image: string, private _items: CocktailItem[]) {
+	constructor(private _name: string, private _description, private _image: string, private _items: CocktailItem[]) {
 
 	}
 
 	get name(): string {
 		return this._name;
+	}
+
+	get description() {
+		return this._description;
 	}
 
 	get items(): CocktailItem[] {
