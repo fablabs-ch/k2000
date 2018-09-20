@@ -32,8 +32,6 @@ void Barman::run(unsigned long dtMs){
         int positionMm = this->servos->getServoPosMm(this->currentItem.servo);
         this->carrier->move(positionMm);
         this->state = MOVING;
-//        Serial.print("moveTo ");
-//        Serial.println(this->currentItem.servo);
 
     }else if(this->state == MOVING){
         if(!this->carrier->isMoving()){
@@ -43,12 +41,13 @@ void Barman::run(unsigned long dtMs){
         }
 
     }else if(this->state == FILLING_START){
+        this->targetGramme = this->scale->getGramme() + this->currentItem.gramme;
         this->servos->open(this->currentItem.servo);
         this->state = FILLING_IN_PROGRESS;
-        this->delayUntilNextAction = 2000;
+//        this->delayUntilNextAction = 2000;
 
     }else if(this->state == FILLING_IN_PROGRESS){
-        if(true){ // TODO if we have enough drink
+        if(this->scale->getGramme()>=this->targetGramme){
             this->servos->close(this->currentItem.servo);
             // wait for last drop
             this->delayUntilNextAction = 2000;

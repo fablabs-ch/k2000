@@ -46,6 +46,7 @@ class Barman
 
         QueueItem queue[QUEUE_SIZE];
         int queueSize = 0;
+        int targetGramme = 0;
 
         unsigned long delayUntilNextAction = 0;
         QueueItem currentItem;

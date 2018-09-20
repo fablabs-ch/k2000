@@ -26,7 +26,7 @@ class Servos
 
     private:
         int servo_close[NBSERVOS] = { 0, 0, 0, 0, 0, 0}; //value set when close (in percent)
-        int servo_open[NBSERVOS] = { 40,50,100,100,100,100 }; // value set when open (in percent)
+        int servo_open[NBSERVOS] = { 60,70,100,100,100,100 }; // value set when open (in percent)
         int servo_posMm[NBSERVOS]  = {15, 35, 65, 95, 180, 200}; // in mm
 
         int servo_pins[NBSERVOS] = { 3, 4, 5, 6, 7, 8};
